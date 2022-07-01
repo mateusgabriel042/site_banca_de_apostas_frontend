@@ -31,7 +31,10 @@
 		name: 'NavInfo',
 		methods: {
 			openRoles(rule){
-				let Window = window.open (`rules/${rule}.html`, 'popup');
+				let url = window.location.href;
+				let arr = url.split("/");
+				let result = arr[0] + "//" + arr[2];
+				let Window = window.open (`${result}/rules/${rule}.html`, 'popup');
 			}
 		}
 	}
