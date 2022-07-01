@@ -12,8 +12,8 @@
 				</div>
 
 				<div class="area-show-modals">
-					<button type="button">Regras Gerais</button>
-					<button type="button">Jogo Responsável</button>
+					<button @click="openRoles('regras_gerais')" type="button">Regras Gerais</button>
+					<button @click="openRoles('responsible_gaming')" type="button">Jogo Responsável</button>
 					<button type="button">Suporte</button>
 					<button type="button">Português</button>
 				</div>
@@ -23,8 +23,17 @@
 </template>
 
 <script>
+	/*function newPopup(){
+		alert();
+		//
+	}*/
 	export default {
 		name: 'NavInfo',
+		methods: {
+			openRoles(rule){
+				let Window = window.open (`rules/${rule}.html`, 'popup');
+			}
+		}
 	}
 </script>
 
