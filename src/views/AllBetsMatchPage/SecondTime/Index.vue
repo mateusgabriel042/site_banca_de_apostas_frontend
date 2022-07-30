@@ -1,0 +1,3 @@
+<template>
+	Segundo tempo
+</template>

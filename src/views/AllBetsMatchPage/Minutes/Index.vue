@@ -1,0 +1,3 @@
+<template>
+	Minutos
+</template>

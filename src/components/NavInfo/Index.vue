@@ -14,7 +14,9 @@
 				<div class="area-show-modals">
 					<button @click="openRoles('regras_gerais')" type="button">Regras Gerais</button>
 					<button @click="openRoles('responsible_gaming')" type="button">Jogo Responsável</button>
-					<button type="button">Suporte</button>
+					<a href="https://web.whatsapp.com/send?phone=5515991520383" target="_blank">
+						<button type="button">Suporte</button>
+					</a>
 					<button type="button">Português</button>
 				</div>
 			</div>
@@ -23,10 +25,6 @@
 </template>
 
 <script>
-	/*function newPopup(){
-		alert();
-		//
-	}*/
 	export default {
 		name: 'NavInfo',
 		methods: {
