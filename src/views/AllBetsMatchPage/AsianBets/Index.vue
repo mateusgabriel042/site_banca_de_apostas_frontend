@@ -1,3 +1,3 @@
 <template>
-	Segundo tempo
+	apostas asiaticas
 </template>

@@ -27,7 +27,7 @@
 				<div class="col-list-1 col-timer">{{match.hour}}</div>
 				
 				<div class="col-list-4 col-match">
-					<router-link to="/bets-match/principal"><label>{{match.opponent1}} x {{match.opponent2}}</label></router-link>
+					<router-link :to="'/bets-match/'+idLeague+'/'+match.id+'/principal'"><label>{{match.opponent1}} x {{match.opponent2}}</label></router-link>
 				</div>
 
 				<div class="col-list-1 col-action"><font-awesome-icon icon="fa-solid fa-bar-chart" /></div>
@@ -43,9 +43,11 @@
 
 <script>
 	export default {
-		props: ['competition'],
+		props: ['competition', 'idLeague'],
 		props: {
 	    	competition: Object,
+	    	idLeague: String,
+
 		}
 	}
 </script>

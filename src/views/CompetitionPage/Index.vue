@@ -1,5 +1,5 @@
 <template>
-	<Competition :competition="competition" />
+	<Competition :competition="competition" :idLeague="idLeague" />
 </template>
 
 <script>
@@ -18,6 +18,7 @@
 	    			typeSport: 'Futebol',
 	    			listMatchs: []
 	    		},
+	    		idLeague: this.$route.params.idLeague,
 	    	}
 	    },
 
@@ -32,7 +33,6 @@
 	    mounted() {
 			BetService.getMatchesByLeague(this.$route.params.idLeague).then(
 				(response) => {
-				    console.log(response.data);
 				    let data = response.data;
 				    if(data.matchesByDay.length > 0){
 					    data.matchesByDay.forEach((item, index) => {
@@ -40,12 +40,13 @@
 					    	item.matches.forEach((itemMatche, index) => {
 					    		matchsTemp.push(
 					    			{
+					    				id: itemMatche.match.id,
 				    					hour: this.msToTime(itemMatche.match.time),
 				    					opponent1: itemMatche.match.home.name,
 				    					opponent2: itemMatche.match.away.name,
-				    					oddHouse: parseFloat(itemMatche?.odds?.half?.sp.half_time_result.odds[0].odds).toFixed(2),
-				    					oddDraw: parseFloat(itemMatche?.odds?.half?.sp.half_time_result.odds[1].odds).toFixed(2),
-				    					oddVisitor: parseFloat(itemMatche?.odds?.half?.sp.half_time_result.odds[2].odds).toFixed(2),
+				    					oddHouse: parseFloat(itemMatche?.odds?.main?.sp.full_time_result.odds[0].odds).toFixed(2),
+				    					oddDraw: parseFloat(itemMatche?.odds?.main?.sp.full_time_result.odds[1].odds).toFixed(2),
+				    					oddVisitor: parseFloat(itemMatche?.odds?.main?.sp.full_time_result.odds[2].odds).toFixed(2),
 			    					},
 					    		);
 					    	});
