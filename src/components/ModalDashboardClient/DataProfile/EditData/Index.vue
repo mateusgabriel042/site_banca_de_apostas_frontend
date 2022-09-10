@@ -1,12 +1,12 @@
 <template>
 	<div class="area-edit-user">
-		<form>
+		<form @submit="onSubmitEditUser">
 			<h4><font-awesome-icon icon="fa-solid fa-globe-americas" /> Localização</h4>
 			<div class="row">
 				<div class="col-6">
 					<div class="group-input">
 						<label for="address_country">País de Residência</label>
-						<select class="form-select" name="address_country" id="address_country" v-model="user.address_country">
+						<select class="form-select" name="address_country" id="address_country" v-model="dataUser.address_country">
 							<option value="null">Selecionar</option>
 							<option value="Brasil">Brasil</option>
 							<option value="Portugal">Portugal</option>
@@ -18,7 +18,7 @@
 				<div class="col-6">
 					<div class="group-input">
 						<label>Fuso Horário</label>
-						<select class="form-select" name="timezone" v-model="user.timezone">
+						<select class="form-select" name="timezone" v-model="dataUser.timezone">
 							<option value="null">Selecionar</option>
 							<option value="GMT-3">GMT-3</option>
 						</select>
@@ -29,7 +29,7 @@
 				<div class="col-6">
 					<div class="group-input">
 						<label>Idioma</label>
-						<select class="form-select" name="language" v-model="user.language">
+						<select class="form-select" name="language" v-model="dataUser.language">
 							<option value="null">Selecionar</option>
 							<option value="PT-br">Português</option>
 						</select>
@@ -44,14 +44,14 @@
 				<div class="col-6">
 					<div class="group-input">
 						<label for="first_name">Primeiro Nome</label>
-						<input type="text" name="first_name" id="first_name" :value="user.first_name" />
+						<input type="text" id="first_name" v-model="dataUser.first_name" />
 					</div>
 				</div>
 
 				<div class="col-6">
 					<div class="group-input">
 						<label for="last_name">Sobrenome Nome</label>
-						<input type="text" name="last_name" id="last_name" :value="user.last_name" />
+						<input type="text" id="last_name" v-model="dataUser.last_name" />
 					</div>
 				</div>
 			</div>
@@ -60,14 +60,14 @@
 				<div class="col-6">
 					<div class="group-input">
 						<label>CPF</label>
-						<label>{{user.cpf || '-'}}</label>
+						<label>{{dataUser.cpf || '-'}}</label>
 					</div>
 				</div>
 
 				<div class="col-6">
 					<div class="group-input">
 						<label for="birth_date">Data de nascimento</label>
-						<input type="text" name="birth_date" id="birth_date" :value="user.birth_date" />
+						<input type="text" name="birth_date" id="birth_date" v-model="dataUser.birth_date" />
 					</div>
 				</div>
 			</div>
@@ -76,7 +76,7 @@
 				<div class="col-6">
 					<div class="group-input">
 						<label>Gênero</label>
-						<select class="form-select" name="sex" v-model="user.sex">
+						<select class="form-select" v-model="dataUser.sex">
 							<option value="null">Selecionar</option>
 							<option value="M">Masculino</option>
 							<option value="F">Feminino</option>
@@ -92,15 +92,15 @@
 				<div class="col-6">
 					<div class="group-input">
 						<label for="email">E-mail</label>
-						<input type="email" name="email" id="email" :value="user.email" />
+						<input type="email" id="email" v-model="dataUser.email" />
 					</div>
 				</div>
 
 				<div class="col-6">
 					<div class="group-input">
 						<label for="mobile_phone">Telefone</label>
-						<input type="text" class="ddd-cellphone cellphone" name="ddd_country" maxlength="4" value="+55" />
-						<input type="text" class="cellphone" name="mobile_phone" id="mobile_phone" placeholder="(__)_____-____" :value="user.mobile_phone" />
+						<input type="text" class="ddd-cellphone cellphone" value="+55" maxlength="4" />
+						<input type="text" class="cellphone" id="mobile_phone" v-model="dataUser.mobile_phone" placeholder="(__)_____-____" />
 					</div>
 				</div>
 			</div>
@@ -109,7 +109,7 @@
 				<div class="col-6">
 					<div class="group-input">
 						<label for="verify_email">Confirmar de Email</label>
-						<input type="email" name="verify_email" id="verify_email" />
+						<input type="email" v-model="dataUser.verify_email" id="verify_email" />
 					</div>
 				</div>
 			</div>
@@ -121,10 +121,9 @@
 				<div class="col-6">
 					<div class="group-input">
 						<label>Estado</label>
-						<select class="form-select" name="address_state_id" v-model="user.address_state_id">
+						<select class="form-select" name="address_state_id" v-model="dataUser.address_state_id" @change="changeState()">
 							<option value="null">Selecionar</option>
-							<option value="4654">RN</option>
-							<option value="46544">SC</option>
+							<option v-for="(item, index) in states" :key="index" :value="item.id">{{item.sigla}}</option>
 						</select>
 					</div>
 				</div>
@@ -132,10 +131,9 @@
 				<div class="col-6">
 					<div class="group-input">
 						<label>Cidade</label>
-						<select class="form-select" name="address_state_id" v-model="user.address_city_id">
+						<select class="form-select" name="address_state_id" v-model="dataUser.address_city_id">
 							<option value="null">Selecionar</option>
-							<option value="1324">Macau</option>
-							<option value="5123">Natal</option>
+							<option v-for="(item, index) in cities" :key="index" :value="item.id">{{item.nome}}</option>
 						</select>
 					</div>
 				</div>
@@ -145,14 +143,14 @@
 				<div class="col-6">
 					<div class="group-input">
 						<label for="address_zipcode">CEP</label>
-						<input type="text" placeholder="_____-___" name="address_zipcode" id="address_zipcode" :value="user.address_zipcode" />
+						<input type="text" placeholder="_____-___" id="address_zipcode" v-model="dataUser.address_zipcode" />
 					</div>
 				</div>
 
 				<div class="col-6">
 					<div class="group-input">
 						<label for="address_street">Rua</label>
-						<input type="text" name="address_street" id="address_street" :value="user.address_street" />
+						<input type="text" id="address_street" v-model="dataUser.address_street" />
 					</div>
 				</div>
 			</div>
@@ -161,14 +159,14 @@
 				<div class="col-6">
 					<div class="group-input">
 						<label for="address_number">Número</label>
-						<input type="text" name="address_number" id="address_number" :value="user.address_number" />
+						<input type="text" id="address_number" v-model="dataUser.address_number" />
 					</div>
 				</div>
 
 				<div class="col-6">
 					<div class="group-input">
 						<label for="address_complement">Complemento</label>
-						<input type="text" name="address_complement" id="address_complement" :value="user.address_complement" />
+						<input type="text" id="address_complement" v-model="dataUser.address_complement" />
 					</div>
 				</div>
 			</div>
@@ -186,15 +184,78 @@
 </template>
 
 <script>
+	import apiLocations from '../../../../services/api.locations.js';
 	export default {
 		name: 'EditData',
 		data() {
 		    return {
+		    	states: [],
+		    	cities: [],
 		    	loading: false,
-		    	user: JSON.parse(localStorage.getItem('user')).user,
+		    	dataUser: JSON.parse(localStorage.getItem('user')),
 		    };
 		},
+		methods: {
+			onSubmitEditUser(event){
+				event.preventDefault();
+				if(this.dataUser.accept_policy == 0){
+					alert('É importante que você concorde com as politicas do nosso site!');
+				} else if (this.dataUser.email == null){
+					alert('O email não foi informado.');
+				} else if (this.dataUser.verify_email != this.dataUser.email) {
+					alert('A confirmação de email esta diferente do email informado.');
+				} else {
+					this.loading = true;
+
+					let dataUserTemp = this.dataUser;
+					this.dataUser.address_state = this.states.find(function(el){
+					    return el.id == dataUserTemp.address_state_id;
+					})?.nome;
+
+					this.dataUser.address_city = this.cities.find(function(el){
+					    return el.id == dataUserTemp.address_city_id;/* eslint-disable-line */
+					})?.nome;
+		    	
+			    	this.$store.dispatch("auth/edit", this.dataUser).then(() => {
+			          	this.loading = false;
+			          	this.$router.push("/");
+			        },(error) => {
+			        	this.loading = false;
+			        	console.log(error.response);
+			        	this.message = "ocorreu algum erro"
+			        });
+				}
+				console.log(this.dataUser);
+			},
+			changeState(){
+				apiLocations.get(`estados/${this.dataUser.address_state_id}/municipios`)
+					.then((res) => {
+						this.cities = res.data;
+					})
+					.catch(error =>{
+						console.log(error);
+					})
+			}
+		},
 		mounted() {
+			apiLocations.get('estados')
+			.then((res) => {
+				this.states = res.data;
+				console.log(this.states);
+			})
+			.catch(error =>{
+				console.log(error);
+			})
+
+			if(this.dataUser.address_state_id != null && this.dataUser.address_state_id != undefined){
+				apiLocations.get(`estados/${this.dataUser.address_state_id}/municipios`)
+					.then((res) => {
+						this.cities = res.data;
+					})
+					.catch(error =>{
+						console.log(error);
+					})
+			}
 
 		},
 	}

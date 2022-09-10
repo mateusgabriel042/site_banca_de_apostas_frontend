@@ -161,22 +161,29 @@
 					</li>
 				</div>
 			</div>
+
 		</ul>
 	</div>
 
 </template>
 
 <script>
+	import { mapGetters } from 'vuex';
 	export default {
 		name: 'MyData',
 		data() {
 		    return {
 		    	loading: false,
-		    	user: JSON.parse(localStorage.getItem('user')).user,
+		    	//user: JSON.parse(localStorage.getItem('user')),
 		    };
 		},
-		mounted() {
-			
+		computed: {
+			...mapGetters({
+	        	user: 'auth/user',
+	    	}),
+		    loggedIn() {
+		    	return this.$store.state.auth.status.loggedIn;
+		    },
 		},
 	}
 </script>

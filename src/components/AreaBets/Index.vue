@@ -1,81 +1,103 @@
 <template>
 	<div class="area-bets">
-		<!--<label class="not-bets">Ainda não há nenhuma aposta!</label>-->
-		<ul>
-			<li>
-				<div class="row">
-					<div class="col-1">
-						<button class="btn-close-bet" type="button"><font-awesome-icon icon="fa-solid fa-close" /></button>
+		<label class="not-bets" v-if="betsList.length === 0">Ainda não há nenhuma aposta!</label>
+		<div v-else>
+			<ul>
+				
+				<li v-for="(item, index) in betsList" :key="index">
+					<div class="row">
+						<div class="col-1">
+							<button class="btn-close-bet" @click="removeBetOfList(index)" type="button"><font-awesome-icon icon="fa-solid fa-close" /></button>
+						</div>
+						<div class="col-10">
+							<div class="area-lb-odd">
+								<label>{{item.info.labelBet}}</label>
+								<label>{{parseFloat(item.info.odd).toFixed(2)}}</label>
+							</div>
+							<div class="area-label-indicator">
+								<label>{{item.info.labelTypeBet}}</label>
+							</div>
+							<div class="area-label-game">
+								<label>{{item.info.labelMatche}}</label>
+							</div>
+							<div class="area-input-bet">
+								<input type="number" min="0" name="bet[]" @change="onChangeBet($event, index)" />
+								<label>Retornos: {{parseFloat(item.priceBet*item.info.odd).toFixed(2)}}</label>
+							</div>
+						</div>
 					</div>
-					<div class="col-10">
-						<div class="area-lb-odd">
-							<label>Fortaleza CE</label>
-							<label>2.12</label>
-						</div>
-						<div class="area-label-indicator">
-							<label>Resultado Final</label>
-						</div>
-						<div class="area-label-game">
-							<label>Fortaliza CE v Estudiantes de La Plata</label>
-						</div>
-						<div class="area-input-bet">
-							<input type="number" name="bet[]" />
-							<label>Retornos: 0,00</label>
-						</div>
-					</div>
-				</div>
-			</li>
+				</li>
 
-			<li>
-				<div class="row">
-					<div class="col-1">
-						<button class="btn-close-bet" type="button"><font-awesome-icon icon="fa-solid fa-close" /></button>
-					</div>
-					<div class="col-10">
-						<div class="area-lb-odd">
-							<label>Fortaleza CE</label>
-							<label>2.12</label>
-						</div>
-						<div class="area-label-indicator">
-							<label>Resultado Final</label>
-						</div>
-						<div class="area-label-game">
-							<label>Fortaliza CE v Estudiantes de La Plata</label>
-						</div>
-						<div class="area-input-bet">
-							<input type="number" name="bet[]" />
-							<label>Retornos: 0,00</label>
+				<li v-if="betsList.length > 1">
+					<div class="row">
+						<div class="col-11">
+							<div class="area-lb-odd">
+								<label>Aposta Múltipla</label>
+								<label>{{parseFloat(oddMultiple).toFixed(2)}}</label>
+							</div>
+							<div class="area-label-indicator">
+								<label>{{betsList.length}} Múltiplas</label>
+							</div>
+							<div class="area-input-bet">
+								<input type="number" min="0" name="betMultiples[]" @change="onChangeMultipleBet($event)" />
+								<label>Retornos: {{(oddMultiple*priceTotalBets).toFixed(2)}}</label>
+							</div>
 						</div>
 					</div>
-				</div>
-			</li>
+				</li>
+			</ul>
 
-			<li>
-				<div class="row">
-					<div class="col-11">
-						<div class="area-lb-odd">
-							<label>Aposta Múltipla</label>
-							<label>2.12</label>
-						</div>
-						<div class="area-label-indicator">
-							<label>2 Múltiplas</label>
-						</div>
-						<div class="area-input-bet">
-							<input type="number" name="bet[]" />
-							<label>Retornos: 0,00</label>
-						</div>
-					</div>
-				</div>
-			</li>
-		</ul>
-
-		<button class="btn-finish-bet">Fazer Aposta <span>R$ 23,00</span></button>
+			<button class="btn-finish-bet" @click="purchaseBet()">Fazer Aposta <span>R$ {{priceTotalBets}}</span></button>
+		</div>
 	</div>
 </template>
 
 <script>
+	import { mapGetters } from 'vuex';
+
 	export default {
 		name: 'AreaBets',
+		data() {
+		    return {
+		    	
+		    };
+		},
+		computed: {
+	    	...mapGetters({
+	        	betsList: 'bets/betsList',
+	        	priceTotalBets: 'bets/priceTotalBets',
+	        	oddMultiple: 'bets/oddMultiple'
+	    	})
+	    },
+	    methods:{
+	    	purchaseBet(){
+	    		this.$store.dispatch({
+					type: 'bets/purchaseBet'
+				});
+	    	},
+	    	onChangeBet(event, index){
+	    		this.$store.dispatch({
+					type: 'bets/changePriceBet',
+					indexBetList: index,
+					value: event.target.value,
+				});
+	    	},
+	    	onChangeMultipleBet(event){
+	    		this.$store.dispatch({
+					type: 'bets/changeMultiplePriceBet',
+					value: event.target.value,
+				});
+	    	},
+	    	removeBetOfList(index){
+	    		this.$store.dispatch({
+					type: 'bets/removeBetInList',
+					index: index,
+				});
+	    	}
+	    },
+	    mounted(){
+	    	
+	    }
 	}
 </script>
 

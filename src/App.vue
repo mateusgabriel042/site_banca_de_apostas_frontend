@@ -21,6 +21,8 @@
 					<AreaBets />
 				</div>
 			</div>
+			
+			
 		</div>
 	</body>
 </template>
@@ -132,6 +134,8 @@
 
 	/*lista de poartidas por horarios*/
 	div.match-list-by-hour {}
+
+	.odd-active {background-color:#e8e8e8 !important; color:#17202a !important;}
 
 
 	::-webkit-scrollbar {width:6px; height:5px;}

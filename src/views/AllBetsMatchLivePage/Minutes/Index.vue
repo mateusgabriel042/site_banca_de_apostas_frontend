@@ -1,3 +1,3 @@
 <template>
-	outros
+	Minutos
 </template>

@@ -1,0 +1,3 @@
+<template>
+	apostas asiaticas
+</template>

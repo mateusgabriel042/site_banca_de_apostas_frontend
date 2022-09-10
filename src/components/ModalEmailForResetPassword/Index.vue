@@ -30,11 +30,16 @@
 <script>
 	export default {
 		name: 'ModalEmailForResetPassword',
+		methods: {
+			closeModal(){
+				this.$emit('close-modal-recovery-password');
+			}
+		}
 	}
 </script>
 
 <style scoped>
-	div.background-box-modal {position:fixed; width:100vw; height:100vh; background-color:rgba(0,0,0,0.5); margin:0 auto; top:0px; left:0px; z-index:3; display:none; justify-content:center; align-items:center;}
+	div.background-box-modal {position:fixed; width:100vw; height:100vh; background-color:rgba(0,0,0,0.5); margin:0 auto; top:0px; left:0px; z-index:3; display:flex; justify-content:center; align-items:center;}
 	div.modal-email-for-reset-password {float:left; min-width:350px; max-width:350px; background-color:#424242; border-radius:10px;}
 	div.modal-email-for-reset-password header {width:100%; padding:15px 0px; display:flex; justify-content:center;}
 	div.modal-email-for-reset-password header img {width:190px;}

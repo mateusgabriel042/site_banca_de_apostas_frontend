@@ -14,6 +14,8 @@ nav a:hover {background-color:#444444;}
 
 main {float:left; width:100%; min-height:calc(100vh - 148px); background-color:#dbdbdb;}
 main article {float:left; width:100%; color:#333333; padding-bottom:30px;}
-main article ol li ol li {font-size:13px; line-height:22px;}
+main article > ul {list-style:none;}
+main article ul li ul li {font-size:13px; line-height:22px; margin-bottom:10px;}
+main article ol li ol li {font-size:13px; line-height:22px; margin-bottom:10px;}
 
 .active {background-color:#ff8800;}

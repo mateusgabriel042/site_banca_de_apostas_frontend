@@ -7,7 +7,7 @@
 		</div>
 	</div>
 	<div class="filter-top">
-		<router-link to="/bets-match/principal" active-class="active">Principal</router-link>
+		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/principal'" active-class="active">Principal</router-link>
 		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/asian-bets'" active-class="active">Apostas asiáticas</router-link>
 		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/gols'" active-class="active">Gols</router-link>
 		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/tempos'" active-class="active">1º Tempo / 2º Tempo</router-link>
@@ -16,7 +16,6 @@
 		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/jogador'" active-class="active">Jogador</router-link>
 		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/minutos'" active-class="active">Minutos</router-link>
 		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/especial'" active-class="active">Especial</router-link>
-		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/outros'" active-class="active">Outros</router-link>
 		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/buscar'" active-class="active">Buscar</router-link>
 		<!--<router-link to="/bets-match/handicap" active-class="active">Handicap</router-link>-->
 	</div>
@@ -45,11 +44,12 @@
 			}
 	    },
 
-
 	    mounted() {
+	    	this.$store.dispatch('bets/setLoading', true);
 			BetService.getMatcheOdds(this.$route.params.idLeague, this.$route.params.idMache).then(
 				(response) => {
 					this.matche = response.data.match;
+					this.$store.dispatch('bets/setLoading', false);
 				},
 				(error) => {
 				    this.content = 'algum erro aconteceu'

@@ -5,7 +5,7 @@
 				<img class="logo" src="@/assets/logo-banca-de-apostas.png">
 				<button @click="closeModal()"><font-awesome-icon icon="fa-solid fa-close" /></button>
 			</header>
-			<form>
+			<form @submit="onSubmitCreateUser">
 				<h4><font-awesome-icon icon="fa-solid fa-user" /> Informações pessoais</h4>
 				<p>Informe os dados corretamente, pois os mesmos serão validados posteriormente com seu documento de identificação.</p>
 
@@ -13,14 +13,14 @@
 					<div class="col-6">
 						<div class="group-input">
 							<label>Primeiro Nome</label>
-							<input type="text" name="first_name" />
+							<input type="text" v-model="dataUser.first_name" />
 						</div>
 					</div>
 
 					<div class="col-6">
 						<div class="group-input">
 							<label>Sobrenome Nome</label>
-							<input type="text" name="last_name" />
+							<input type="text" v-model="dataUser.last_name" />
 						</div>
 					</div>
 				</div>
@@ -29,14 +29,14 @@
 					<div class="col-6">
 						<div class="group-input">
 							<label>CPF</label>
-							<input type="text" name="cpf" />
+							<input type="text" v-model="dataUser.cpf" />
 						</div>
 					</div>
 
 					<div class="col-6">
 						<div class="group-input">
 							<label>Data de nascimento</label>
-							<input type="text" name="birth_date" />
+							<input type="text" v-model="dataUser.birth_date" />
 						</div>
 					</div>
 				</div>
@@ -47,15 +47,15 @@
 					<div class="col-6">
 						<div class="group-input">
 							<label>E-mail</label>
-							<input type="email" name="first_name" />
+							<input type="email" v-model="dataUser.email" />
 						</div>
 					</div>
 
 					<div class="col-6">
 						<div class="group-input">
 							<label>Telefone</label>
-							<input type="text" class="ddd-cellphone cellphone" name="ddd_country" maxlength="4" value="+55" />
-							<input type="text" class="cellphone" name="cell_phone" placeholder="(__)_____-____" />
+							<input type="text" class="ddd-cellphone cellphone" v-model="dataUser.ddd_country" maxlength="4" />
+							<input type="text" class="cellphone" v-model="dataUser.mobile_phone" placeholder="(__)_____-____" />
 						</div>
 					</div>
 				</div>
@@ -64,7 +64,7 @@
 					<div class="col-6">
 						<div class="group-input">
 							<label>Verificação de Email</label>
-							<input type="email" name="verify_email" />
+							<input type="email" v-model="dataUser.verify_email" />
 						</div>
 					</div>
 				</div>
@@ -76,7 +76,7 @@
 						<div class="group-input-icon">
 							<label>Usuário</label>
 							<span><font-awesome-icon icon="fa-solid fa-user" /></span>
-							<input type="email" name="first_name" />
+							<input type="text" v-model="dataUser.username" />
 						</div>
 						<p class="info-input">Seu nome de usuário deve conter apenas apenas letras, números e sublinhado. Não pode ter acentos ou caracteres especiais. O tamanho deve ser entre 5 e 15 caracteres</p>
 					</div>
@@ -87,7 +87,7 @@
 						<div class="group-input-icon">
 							<label>Senha</label>
 							<span><font-awesome-icon icon="fa-solid fa-lock" /></span>
-							<input type="email" name="first_name" />
+							<input type="password" v-model="dataUser.password" />
 						</div>
 						<p class="info-input">A senha deve conter entre 8 e 15 carateres e não pode conter seu nome de usuário</p>
 					</div>
@@ -96,7 +96,7 @@
 						<div class="group-input-icon">
 							<label>Confirmação da Senha</label>
 							<span><font-awesome-icon icon="fa-solid fa-lock" /></span>
-							<input type="email" name="first_name" />
+							<input type="password" v-model="dataUser.password_confirmation" />
 						</div>
 					</div>
 				</div>
@@ -108,8 +108,8 @@
 					</div>
 					<div class="col-12">
 						<div class="area-input-accept-policy">
-							<input type="checkbox" name="accept_policy" />
-							<label>Concordo</label>
+							<input type="checkbox" id="input-accept_policy" v-model="dataUser.accept_policy" />
+							<label for="input-accept_policy">Concordo</label>
 						</div>
 					</div>
 				</div>
@@ -136,8 +136,30 @@
 </template>
 
 <script>
+
 	export default {
 		name: 'ModalRegisterUser',
+
+		data() {
+		    return {
+		    	loading: false,
+		    	dataUser: {
+		    		first_name: null,
+		    		last_name: null,
+					cpf: null,
+					birth_date: null,
+					email: null,
+					ddd_country: '+55',
+					mobile_phone: null,
+					verify_email: null,
+					username: null,
+					password: null,
+					password_confirmation: null,
+					accept_policy: 0,
+		    	},
+		    	
+		    };
+		},
 
 		methods: {
 
@@ -146,13 +168,38 @@
 				let arr = url.split("/");
 				let result = arr[0] + "//" + arr[2];
 				let Window = window.open (`${result}/rules/${rule}.html`, 'popup');
-			}
+			},
+			closeModal(){
+				this.$emit('close-modal-register-user');
+			},
+
+			onSubmitCreateUser(event){
+				event.preventDefault();
+				if(this.dataUser.accept_policy == 0){
+					alert('É importante que você concorde com as politicas do nosso site!');
+				} else if (this.dataUser.email == null){
+					alert('O email não foi informado.');
+				} else if (this.dataUser.verify_email != this.dataUser.email) {
+					alert('A confirmação de email esta diferente do email informado.');
+				} else {
+					this.loading = true;
+		    	
+			    	this.$store.dispatch("auth/register", this.dataUser).then(() => {
+			          	this.loading = false;
+			          	this.$router.push("/");
+			        },(error) => {
+			        	this.loading = false;
+			        	console.log(error.response);
+			        	this.message = "ocorreu algum erro"
+			        });
+				}
+			},
 		}
 	}
 </script>
 
 <style scoped>
-	div.background-box-modal {position:fixed; width:100vw; height:100vh; background-color:rgba(0,0,0,0.5); margin:0 auto; top:0px; left:0px; z-index:3; display:none; justify-content:center; align-items:center;}
+	div.background-box-modal {position:fixed; width:100vw; height:100vh; background-color:rgba(0,0,0,0.5); margin:0 auto; top:0px; left:0px; z-index:3; display:flex; justify-content:center; align-items:center;}
 	div.area-modal-register-user {float:left; min-width:750px; max-width:750px; height:70%; background-color:#c5c5c5; border-radius:10px;}
 	div.area-modal-register-user header {width:100%; padding:15px 0px; background:url("@/assets/ns_banner.png") no-repeat; background-size:cover; display:flex; justify-content:center; border-radius:10px 10px 0px 0px;}
 	div.area-modal-register-user header img {width:120px;}

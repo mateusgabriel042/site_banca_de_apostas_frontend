@@ -87,22 +87,20 @@
 
 <script>
 	import BetService from "../../../services/bet.service";
+	import { mapGetters } from 'vuex';
 
 	export default {
 		data(){
 			return {
-				leagues: []
 			}
 		},
+		computed: {
+	    	...mapGetters({
+	        	leagues: 'bets/leagues'
+	    	})
+	    },
 		mounted() {
-			BetService.getLeagues().then(
-				(response) => {
-				    this.leagues = response.data;
-				},
-				(error) => {
-				    this.content = 'algum erro aconteceu'
-				}
-			);
+			this.$store.dispatch('bets/initLeagues');
 		},
 	}
 </script>

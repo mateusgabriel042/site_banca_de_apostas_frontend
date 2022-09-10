@@ -216,14 +216,6 @@
 			</div>
 		</div>
 
-		<div class="area-odds">
-			<label class="teste">Outras apostas</label>
-			<div class="odds" v-for="(item, index) in oddsMain.bet_boost" :key="index">
-				<div class="col-list-6 col-odd">{{item?.name}}</div>
-				<div class="col-list-6 col-odd center bg-gray-1"><span class="color-odd">{{parseFloat(item?.odds).toFixed(2)}}</span></div>
-			</div>
-		</div>
-
 
 
 		<!--
@@ -527,13 +519,14 @@
 					corners: [],
 					handicap_result: [],
 					alternative_handicap_result: [],
-					bet_boost: [],
+					bet_boost: [],//nao implementado
 	    		},
 	    		
 	    	}
 	    },
 
 	    mounted() {
+	    	this.$store.dispatch('bets/setLoading', true);
 			BetService.getMatcheOdds(this.$route.params.idLeague, this.$route.params.idMache).then(
 				(response) => {
 					this.matche = response.data.match;
@@ -556,6 +549,8 @@
 					//this.oddsMain.full_time_result_enhanced_prices = dataOddsMain.full_time_result_–_enhanced_prices.odds;
 				    //this.oddsMain.handicap_result = dataOddsMain.handicap_result.odds;
 					//this.oddsMain.alternative_handicap_result = dataOddsMain.alternative_handicap_result.odds;
+
+					this.$store.dispatch('bets/setLoading', false);
 				},
 				(error) => {
 				    this.content = 'algum erro aconteceu'

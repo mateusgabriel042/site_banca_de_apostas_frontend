@@ -1,23 +1,28 @@
-import axios from 'axios';
-import authHeader from './auth-header';
-
-const API_URL = 'http://localhost:8000/api/bets';
+import api from './api';
 
 class BetService {
 	getLeagues() {
-    	return axios.get(API_URL + '/leagues/list', { headers: authHeader() });
+    	return api.get(`bets/leagues/list`);
 	}
 
 	getMatchesByLeague(idLeague) {
-    	return axios.get(API_URL + '/leagues/matches-by-league/' + idLeague, { headers: authHeader() });
+    	return api.get(`bets/leagues/matches-by-league/${idLeague}`);
 	}
 
 	getMatcheOdds(idLeague, idMatche) {
-    	return axios.get(API_URL + '/leagues/matche-odds/' + idLeague + '/' + idMatche, { headers: authHeader() });
+    	return api.get(`bets/leagues/matche-odds/${idLeague}/${idMatche}`);
 	}
 
 	getMatche(idLeague, idMatche) {
-    	return axios.get(API_URL + '/leagues/matche/' + idLeague + '/' + idMatche, { headers: authHeader() });
+    	return api.get(`bets/leagues/matche/${idLeague}/${idMatche}`);
+	}
+
+	getMatchesInLive() {
+    	return api.get(`bets/leagues/lives`);
+	}
+
+	getMatcheInLive(idMatche) {
+    	return api.get(`bets/leagues/live/${idMatche}`);
 	}
 }
 

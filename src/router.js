@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 function lazyLoad(dir){
-	return import(`./views/${dir}/Index.vue`)
+	return () => import(`./views/${dir}/Index.vue`)
 }
 
 const routes = [
@@ -9,7 +9,7 @@ const routes = [
 
 	{path: '/esports', component: lazyLoad('Esports'),
 		children: [
-			{path: '', component: lazyLoad('Lives/Football')},
+			{path: '/', component: lazyLoad('Lives/Football')},
 			{path: 'lives', component: lazyLoad('Lives/Football')},
 	    	{path: 'lives/futebol', component: lazyLoad('Lives/Football')},
 	    	{path: 'lives/basquete', component: lazyLoad('Lives/Basketball')},
@@ -27,7 +27,7 @@ const routes = [
 
 	{path: '/lives', component: lazyLoad('Lives'),
 		children: [
-			{path: '', component: lazyLoad('Lives/Football')},
+			{path: '/', component: lazyLoad('Lives/Football')},
 	    	{path: 'futebol', component: lazyLoad('Lives/Football')},
 	    	{path: 'basquete', component: lazyLoad('Lives/Basketball')},
 	    	{path: 'tenis', component: lazyLoad('Lives/Tennis')},
@@ -55,6 +55,7 @@ const routes = [
 	{path: '/sports/11', component: lazyLoad('Filters/Boxing')},
 
 	{path: '/competicao/:nameLeague?/:idLeague?', component: lazyLoad('CompetitionPage')},
+	
 	{path: '/bets-match/:idLeague/:idMache', component: lazyLoad('AllBetsMatchPage'),
 		children: [
 			{path: 'principal', component: lazyLoad('AllBetsMatchPage/Main')},
@@ -66,8 +67,22 @@ const routes = [
 			{path: 'jogador', component: lazyLoad('AllBetsMatchPage/Players')},
 			{path: 'minutos', component: lazyLoad('AllBetsMatchPage/Minutes')},
 			{path: 'especial', component: lazyLoad('AllBetsMatchPage/Special')},
-			{path: 'outros', component: lazyLoad('AllBetsMatchPage/Others')},
 			{path: 'buscar', component: lazyLoad('AllBetsMatchPage/Search')},
+	    ],
+	},
+
+	{path: '/bets-match-live/:idLeague/:idMache', component: lazyLoad('AllBetsMatchLivePage'),
+		children: [
+			{path: 'principal', component: lazyLoad('AllBetsMatchLivePage/Main')},
+			{path: 'asian-bets', component: lazyLoad('AllBetsMatchLivePage/AsianBets')},
+			{path: 'gols', component: lazyLoad('AllBetsMatchLivePage/Gols')},
+			{path: 'tempos', component: lazyLoad('AllBetsMatchLivePage/FirstAndSecondTime')},
+			{path: 'escanteios', component: lazyLoad('AllBetsMatchLivePage/Corners')},
+			{path: 'cartoes', component: lazyLoad('AllBetsMatchLivePage/Cards')},
+			{path: 'jogador', component: lazyLoad('AllBetsMatchLivePage/Players')},
+			{path: 'minutos', component: lazyLoad('AllBetsMatchLivePage/Minutes')},
+			{path: 'especial', component: lazyLoad('AllBetsMatchLivePage/Special')},
+			{path: 'buscar', component: lazyLoad('AllBetsMatchLivePage/Search')},
 	    ],
 	},
 

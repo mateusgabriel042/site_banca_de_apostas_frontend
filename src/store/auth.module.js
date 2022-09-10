@@ -27,21 +27,48 @@ export const auth = {
     },
     register({ commit }, user) {
       return AuthService.register(user).then(
-        response => {
-          commit('registerSuccess');
-          return Promise.resolve(response.data);
+        user => {
+          commit('registerSuccess', user);
+          return Promise.resolve(user);
         },
         error => {
           commit('registerFailure');
           return Promise.reject(error);
         }
       );
+    },
+    
+    edit({ commit }, user) {
+      return AuthService.edit(user).then(
+        user => {
+          commit('editSuccess', user);
+          return Promise.resolve(user);
+        },
+        error => {
+          commit('registerFailure');
+          return Promise.reject(error);
+        }
+      );
+    },
+    async updateMoneyUser({commit}){
+      let moneyUser = await AuthService.getMoneyUser();
+      commit('updateMoneyUser', moneyUser);
     }
   },
+
+  getters: {
+    user(state) {
+      return state.user;
+    },
+  },
+
   mutations: {
     loginSuccess(state, user) {
       state.status.loggedIn = true;
       state.user = user;
+    },
+    updateMoneyUser(state, moneyUser) {
+      state.user.money = moneyUser;
     },
     loginFailure(state) {
       state.status.loggedIn = false;
@@ -51,8 +78,13 @@ export const auth = {
       state.status.loggedIn = false;
       state.user = null;
     },
-    registerSuccess(state) {
-      state.status.loggedIn = false;
+    registerSuccess(state, user) {
+      state.status.loggedIn = true;
+      state.user = user;
+    },
+    editSuccess(state, user) {
+      state.status.loggedIn = true;
+      state.user = user;
     },
     registerFailure(state) {
       state.status.loggedIn = false;

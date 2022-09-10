@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+//import { Vue } from 'vue'
 import App from './App.vue'
 import router from './router'
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -39,12 +40,12 @@ library.add(faGlobeAmericas)
 library.add(faIdCard)
 library.add(faMobileScreen)
 
-
-
-
-
-
-
+/*new Vue({
+  el: '#app',
+  router,
+  template: '<App/>',
+  components: { FontAwesomeIcon, App }
+})*/
 
 createApp(App)
 .component('font-awesome-icon', FontAwesomeIcon)
