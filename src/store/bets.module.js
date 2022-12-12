@@ -1,6 +1,7 @@
 import BetService from "../services/bet.service";
+import GlobalService from "../services/global.service";
+
 import BetPurchaseService from "../services/bet.purchase.service";
-import BetsListPurchasePrematchService from "../services/bets.list.purchase.prematche.service";
 import BetsListPurchaseLiveService from "../services/bets.list.purchase.live.service";
 
 const user = JSON.parse(localStorage.getItem('user'));
@@ -8,100 +9,72 @@ export const bets = {
 	namespaced: true,
 	state: { 
 		loadingBets: false,
-		leagues: [],
-		listPreMatches: null,
-		matchesInLive: [],
-		betsList: [],
-		betsIsMultiple: false,
+		countriesleagues: [],
+		leagueSelected: {},
+
+		betsSelected: [],
 		priceTotalBets: 0,
 	},
 	actions: {
-		initLeagues({ commit }){
+		initCountryLeagues({ commit }){
 			commit('loading', true);
-			BetService.getLeagues().then(
+			BetService.getAllCountryLeagues().then(
 				(response) => {
-					commit('initLeagues', response.data);
+					commit('initCountryLeagues', response.data.data.items);
 					commit('loading', false);
 				},
 				(error) => {
-				    commit('initLeagues', []);
+				    commit('initCountryLeagues', []);
 				    commit('loading', false);
 				}
 			);
 		},
 
-		searchPreMatchesByLeague({commit}, idLeague){
+		selectLeague({ commit, state }, data){
 			commit('loading', true);
-			BetService.getMatchesByLeague(idLeague).then(
+			BetService.getAllLeagueMatches(data.sportId, data.leagueId).then(
 				(response) => {
-				    let data = response.data;
-				    let listPreMatchesTemp = [];
-				    if(data.matchesByDay.length > 0){
-					    data.matchesByDay.forEach((item, index) => {
-					    	let matchsTemp = [];
-					    	item.matches.forEach((itemMatche, index) => {
-					    		matchsTemp.push(
-					    			{
-					    				id: itemMatche.match.id,
-				    					hour: new Date(itemMatche.match.time*1000).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
-				    					opponent1: itemMatche.match.home.name,
-				    					opponent2: itemMatche.match.away.name,
-				    					oddHouse: parseFloat(itemMatche?.odds?.main?.sp.full_time_result.odds[0].odds).toFixed(2),
-				    					oddDraw: parseFloat(itemMatche?.odds?.main?.sp.full_time_result.odds[1].odds).toFixed(2),
-				    					oddVisitor: parseFloat(itemMatche?.odds?.main?.sp.full_time_result.odds[2].odds).toFixed(2),
-			    					},
-					    		);
-					    	});
-						    listPreMatchesTemp.push(
-						    	{
-				    				dateMatch: item.dayLabel,
-				    				matchs: matchsTemp,
-				    			}
-						    );
-						});
-						commit('addPreMatchesByLeague', listPreMatchesTemp);
-					}else{
-						commit('addPreMatchesByLeague', []);
-					}
+					commit('selectLeague', response.data.data.item);
 					commit('loading', false);
 				},
 				(error) => {
-				    commit('addPreMatchesByLeague', []);
+				    commit('initCountryLeagues', []);
 				    commit('loading', false);
 				}
 			);
 		},
 
-		addBetInList({ commit, state }, data){
-			let itemBet = {
-				idBet: data.idMatche+'-'+data.typeBet+'-'+data.bet,
-				idMatche: data.idMatche,
-				idLeague: data.idLeague,
-				bet: data.bet,
-				typeEvent: data.typeEvent,
-				typeBet: data.typeBet,
-				priceBet: 0.0,
+
+		addBetInList({ commit }, data){
+			let betSelected = {
+				ids: {
+					matcheId: data?.bet365_matche_id,
+					leagueId: data?.apievents_league_id,
+					typeEvent: data?.typeEvent,
+					typeBet: data?.typeBet,
+					subtypeBet: data?.subtypeBet,
+					oddId: data?.oddId,
+
+				},
+				info: {
+					priceBet: 0.0,
+					customer_bet: data.customer_bet,
+					apievents_sport_id: data.apievents_sport_id,
+					odd: data.odd,
+					subtypeBetLabel: data.subtypeBetLabel,
+					oddNameLabel: data.oddNameLabel,
+					labelMatche: data.labelMatche,
+				},
 			}
-			console.log(itemBet);
-			let searchItemInBets = state.betsList.findIndex(element => element.idMatche === data.idMatche);
 
-			if(itemBet.typeEvent === 'pre_matche')
-				itemBet.info = BetsListPurchasePrematchService.getInfoOddsMatch(itemBet, state);
-			else
-				itemBet.info = BetsListPurchaseLiveService.getInfoOddsMatch(itemBet, state);
-
-			if(searchItemInBets < 0)
-				commit('addBetInList', itemBet);
-			else
-				commit('removeBetInList', searchItemInBets);
+			commit('addBetSelected', betSelected);
 		},
 
 		purchaseBet({ commit, state }){
-			if(parseFloat(user.money) - parseFloat(state.priceTotalBets) >= 0){
-				BetPurchaseService.purchaseBet(state.betsList, state.priceTotalBets);
-			}else{
+			if(parseFloat(user.money) - parseFloat(state.priceTotalBets) >= 0)
+				BetPurchaseService.purchaseBet(state.betsSelected, state.priceTotalBets);
+			else
 				alert('Você não tem saldo suficiente, realize uma recarga!');
-			}
 		},
 
 		setLoading({ commit }, loading){
@@ -126,20 +99,16 @@ export const bets = {
 			return state.loadingBets;
 		},
 
-		leagues(state) {
-			return state.leagues;
+		countriesleagues(state) {
+			return state.countriesleagues;
 		},
 
-		listPreMatches(state) {
-			return state.listPreMatches;
+		leagueSelected(state) {
+			return state.leagueSelected;
 		},
 
-		matchesInLive(state) {
-			return state.matchesInLive;
-		},
-
-		betsList(state) {
-			return state.betsList;
+		betsSelected(state) {
+			return state.betsSelected;
 		},
 
 		priceTotalBets(state) {
@@ -148,10 +117,10 @@ export const bets = {
 
 		oddMultiple(state) {
 			let value = 1;
-			state.betsList.forEach(function(item){
-				value *= item.info.odd;
+			state.betsSelected.forEach(function(item){
+				value *= parseFloat(item.info.odd);
 			});
-			return parseFloat(value).toFixed(2);
+			return value.toFixed(2);
 		},
 	},
 	mutations: {
@@ -159,43 +128,69 @@ export const bets = {
 			state.loadingBets = loading;
 		},
 
-		initLeagues(state, data) {
-			if(state.leagues.length === 0)
-				state.leagues = data;
+		initCountryLeagues(state, data) {
+			if(state.countriesleagues.length === 0)
+				state.countriesleagues = data;
 		},
 
-		addPreMatchesByLeague(state, data) {
-			state.listPreMatches = data;
+		selectLeague(state, data){
+			if(Array.isArray(data?.matches)){
+				let matches = [];
+
+				data?.matches.forEach(function(item, indexMatche){
+					let date = new Date(item.date_matche);
+					item.time = GlobalService.getTimeFormated(date);
+					item.day = GlobalService.getDateInFull(date);
+					matches.push(item);
+				});
+
+				data.matches = GlobalService.groupBy(matches, 'day');
+			}
+
+			state.leagueSelected = data;
+		},
+
+		addBetSelected(state, data){
+			let findIndex = state.betsSelected.findIndex((item) =>
+				JSON.stringify(item.ids) == JSON.stringify(data.ids)
+			);
+			let findIndexByMatche = state.betsSelected.findIndex((item) =>
+				item.ids.matcheId == data.ids.matcheId && item.ids.leagueId == data.ids.leagueId
+			);
+			if(findIndex >= 0){
+				state.betsSelected.splice(findIndex, 1);
+			}else if(findIndexByMatche >= 0){
+				state.betsSelected.splice(findIndexByMatche, 1);
+				state.betsSelected.push(data);
+			}else{
+				state.betsSelected.push(data);
+			}
+		},
+
+		removeBetInList(state, indexItem) {
+			state.betsSelected.splice(indexItem, 1);
+			let total = 0.0;
+			state.betsSelected.forEach(function(item){
+				total += parseFloat(item.info.priceBet);
+			});
+			state.priceTotalBets = total;
 		},
 
 		changePriceBet(state, data) {
-			state.betsList[data.indexBetList].priceBet = data.value;
+			state.betsSelected[data.indexBetList].info.priceBet = data.value;
 			let total = 0.0;
-			state.betsList.forEach(function(item){
-				total += parseFloat(item.priceBet);
+			state.betsSelected.forEach(function(item){
+				total += parseFloat(item.info.priceBet);
 			});
 			state.priceTotalBets = total;
 		},
 
 		changeMultiplePriceBet(state, data){
 			state.priceTotalBets = data.value;
-			state.betsList.forEach(function(item, index){
-				state.betsList[index].priceBet = 0;
+			state.betsSelected.forEach(function(item, index){
+				state.betsSelected[index].info.priceBet = 0;
 			});
 		},
 
-		addBetInList(state, item) {
-			state.betsList.push(item);
-		},
-
-		removeBetInList(state, indexItem) {
-			state.betsList.splice(indexItem, 1);
-			let total = 0.0;
-			state.betsList.forEach(function(item){
-				total += parseFloat(item.priceBet);
-			});
-			state.priceTotalBets = total;
-
-		},
 	}
 };

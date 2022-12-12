@@ -1,23 +1,31 @@
 <template>
 	<div class="area-bets-match">
-		<div class="area-odds">
-			<label class="teste">Resultado Final</label>
-			<div class="odds">
-				<div class="col-list-4 col-odd">{{matche?.home?.name}} <span class="color-odd">{{parseFloat(oddsMain.full_time_result[0]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-4 col-odd">Empate <span class="color-odd">{{parseFloat(oddsMain.full_time_result[1]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-4 col-odd">{{matche?.away?.name}} <span class="color-odd">{{parseFloat(oddsMain.full_time_result[2]?.odds).toFixed(2)}}</span></div>
-			</div>
-		</div>
 		
-		<div class="area-odds">
-			<label class="teste">Dupla Hipótese</label>
-			<div class="odds">
-				<div class="col-list-4 col-odd">{{matche?.home?.name}} ou Empate<span class="color-odd">{{parseFloat(oddsMain.double_chance[0]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-4 col-odd">Empate ou {{matche?.away?.name}} <span class="color-odd">{{parseFloat(oddsMain.double_chance[1]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-4 col-odd">{{matche?.home?.name}} ou {{matche?.away?.name}} <span class="color-odd">{{parseFloat(oddsMain.double_chance[2]?.odds).toFixed(2)}}</span></div>
-			</div>
-		</div>
-		<div class="area-odds">
+		<TripleOdds
+			betNameLabel="Resultado Final"
+			:odds="odds.full_time_result"
+			:labelOdd1="matcheOdds?.team_home_name"
+			labelOdd2="Empate"
+			:labelOdd3="matcheOdds?.team_away_name"
+		/>
+
+		<TripleOdds
+			betNameLabel="Dupla Hipótese"
+			:odds="odds.double_chance"
+			:labelOdd1="`${matcheOdds?.team_home_name} ou Empate`"
+			:labelOdd2="`Empate ou ${matcheOdds?.team_away_name}`"
+			:labelOdd3="`${matcheOdds?.team_home_name} ou ${matcheOdds?.team_away_name}`"
+		/>
+
+
+
+
+
+
+		
+		<!--
+
+		<div class="area-odds" v-if="oddsMain.goals_over_under !== undefined">
 			<label class="teste">Total</label>
 			<div class="odds">
 				<div class="col-list-4 col-lb"></div>
@@ -27,34 +35,85 @@
 			
 			<div class="odds">
 				<div class="col-list-4 col-odd center bg-gray-1">{{oddsMain.goals_over_under[0]?.name}}</div>
-				<div class="col-list-4 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsMain.goals_over_under[0]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-4 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsMain.goals_over_under[1]?.odds).toFixed(2)}}</span></div>
+				
+				<div class="col-list-4 col-odd center bg-gray-2"
+					:class="containBet('00007', betsList)"
+					@click="(e) => addBetList(
+						'00007', 'goals_over_under', oddsMain.goals_over_under[0]?.name+'-over', oddsMain.goals_over_under[0]?.odds, `Acima de ${oddsMain?.goals_over_under?.[0]?.name}`, 'Total'
+					)"
+				>
+					<span class="color-odd">{{parseFloat(oddsMain.goals_over_under[0]?.odds).toFixed(2)}}</span>
+				</div>
+				
+				<div class="col-list-4 col-odd center bg-gray-2"
+					:class="containBet('00008', betsList)"
+					@click="(e) => addBetList(
+						'00008', 'goals_over_under', oddsMain.goals_over_under[0]?.name+'-under', oddsMain.goals_over_under[1]?.odds, `Abaixo de ${oddsMain?.goals_over_under?.[0]?.name}`, 'Total'
+					)"
+				>
+					<span class="color-odd">{{parseFloat(oddsMain.goals_over_under[1]?.odds).toFixed(2)}}</span>
+				</div>
 			</div>
 		</div>
 
-		<div class="area-odds">
+		<div class="area-odds" v-if="oddsMain.both_teams_to_score !== undefined">
 			<label class="teste">Para Ambos os Times Marcarem</label>
 			<div class="odds">
-				<div class="col-list-6 col-odd">Sim <span class="color-odd">{{parseFloat(oddsMain.both_teams_to_score[0]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-6 col-odd">Não <span class="color-odd">{{parseFloat(oddsMain.both_teams_to_score[1]?.odds).toFixed(2)}}</span></div>
+				<div class="col-list-6 col-odd"
+					:class="containBet('00009', betsList)"
+					@click="(e) => addBetList(
+						'00009', 'both_teams_to_score', 'yes', oddsMain.both_teams_to_score[0]?.odds, `Sim`, 'Para Ambos os Times Marcarem'
+					)"
+				>
+					Sim 
+					<span class="color-odd">{{parseFloat(oddsMain.both_teams_to_score[0]?.odds).toFixed(2)}}</span>
+				</div>
+				<div class="col-list-6 col-odd"
+					:class="containBet('00010', betsList)"
+					@click="(e) => addBetList(
+						'00010', 'both_teams_to_score', 'no', oddsMain.both_teams_to_score[1]?.odds, `Não`, 'Para Ambos os Times Marcarem'
+					)"
+				>
+					Não 
+					<span class="color-odd">{{parseFloat(oddsMain.both_teams_to_score[1]?.odds).toFixed(2)}}</span>
+				</div>
 			</div>
 		</div>
 
-		<div class="area-odds">
+		<div class="area-odds" v-if="oddsMain.result_both_teams_to_score !== undefined">
 			<label class="teste">Resultado Final e Para Ambos os Times Marcarem</label>
 			<div class="odds">
-				<div class="col-list-4 col-odd">{{matche?.home?.name}} e Sim
+				<div class="col-list-4 col-odd"
+					:class="containBet('00011', betsList)"
+					@click="(e) => addBetList(
+						'00011', 'result_both_teams_to_score', 'home-yes', oddsMain.result_both_teams_to_score[0]?.odds, `${matche?.home?.name} e Sim`, 'Resultado Final e Para Ambos os Times Marcarem'
+					)"
+				>
+					{{matche?.home?.name}} e Sim
 					<span class="color-odd">
 						{{parseFloat(oddsMain.result_both_teams_to_score[0]?.odds).toFixed(2)}}
 					</span>
 				</div>
-				<div class="col-list-4 col-odd">{{matche?.home?.name}} e Não
+
+				<div class="col-list-4 col-odd"
+					:class="containBet('00012', betsList)"
+					@click="(e) => addBetList(
+						'00012', 'result_both_teams_to_score', 'home-no', oddsMain.result_both_teams_to_score[3]?.odds, `${matche?.home?.name} e Não`, 'Resultado Final e Para Ambos os Times Marcarem'
+					)"
+				>
+					{{matche?.home?.name}} e Não
 					<span class="color-odd">
 						{{parseFloat(oddsMain.result_both_teams_to_score[3]?.odds).toFixed(2)}}
 					</span>
 				</div>
 
-				<div class="col-list-4 col-odd">Empate e Sim
+				<div class="col-list-4 col-odd"
+					:class="containBet('00013', betsList)"
+					@click="(e) => addBetList(
+						'00013', 'result_both_teams_to_score', 'draw-yes', oddsMain.result_both_teams_to_score[2]?.odds, `Empate e Sim`, 'Resultado Final e Para Ambos os Times Marcarem'
+					)"
+				>
+					Empate e Sim
 					<span class="color-odd">
 						{{parseFloat(oddsMain.result_both_teams_to_score[2]?.odds).toFixed(2)}}
 					</span>
@@ -62,17 +121,37 @@
 			</div>
 
 			<div class="odds">
-				<div class="col-list-4 col-odd">Empate e Não
+				<div class="col-list-4 col-odd"
+					:class="containBet('00014', betsList)"
+					@click="(e) => addBetList(
+						'00014', 'result_both_teams_to_score', 'draw-no', oddsMain.result_both_teams_to_score[5]?.odds, `Empate e Não`, 'Resultado Final e Para Ambos os Times Marcarem'
+					)"
+				>
+					Empate e Não
 					<span class="color-odd">
 						{{parseFloat(oddsMain.result_both_teams_to_score[5]?.odds).toFixed(2)}}
 					</span>
 				</div>
-				<div class="col-list-4 col-odd">{{matche?.away?.name}} e Sim
+
+				<div class="col-list-4 col-odd"
+					:class="containBet('00015', betsList)"
+					@click="(e) => addBetList(
+						'00015', 'result_both_teams_to_score', 'away-yes', oddsMain.result_both_teams_to_score[1]?.odds, `${matche?.away?.name} e Sim`, 'Resultado Final e Para Ambos os Times Marcarem'
+					)"
+				>
+					{{matche?.away?.name}} e Sim
 					<span class="color-odd">
 						{{parseFloat(oddsMain.result_both_teams_to_score[1]?.odds).toFixed(2)}}
 					</span>
 				</div>
-				<div class="col-list-4 col-odd">{{matche?.away?.name}} e Não
+
+				<div class="col-list-4 col-odd"
+					:class="containBet('00016', betsList)"
+					@click="(e) => addBetList(
+						'00016', 'result_both_teams_to_score', 'away-no', oddsMain.result_both_teams_to_score[4]?.odds, `${matche?.away?.name} e Não`, 'Resultado Final e Para Ambos os Times Marcarem'
+					)"
+				>
+					{{matche?.away?.name}} e Não
 					<span class="color-odd">
 						{{parseFloat(oddsMain.result_both_teams_to_score[4]?.odds).toFixed(2)}}
 					</span>
@@ -80,68 +159,182 @@
 			</div>
 		</div>
 
-		<div class="area-odds">
+		<div class="area-odds" v-if="oddsMain.correct_score !== undefined">
 			<label class="teste">Placar Exato</label>
 			<div class="odds">
-				<div class="col-list-4 col-odd center" v-for="(item, index) in oddsMain.correct_score" :key="index">
-					{{item?.name}}
-					<span class="color-odd">{{parseFloat(item?.odds).toFixed(2)}}</span>
+				<div class="col-list-4 col-lb center">{{matche?.home?.name}}</div>
+			</div>
+			<div class="odds">
+				<div v-for="(item, index) in oddsMain.correct_score" :key="index">
+					<div class="col-list-4 col-odd center"
+						:class="containBet(`00017-${index}`, betsList)"
+						@click="(e) => addBetList(
+							`00017-${index}`, 'correct_score', item?.name+'-home', item?.odds, `${item?.name}`, 'Placar Exato'
+						)"
+						v-if="item?.header == '1'"
+					>
+						{{item?.name}}
+						<span class="color-odd">{{parseFloat(item?.odds).toFixed(2)}}</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="odds">
+				<div class="col-list-4 col-lb center">Empate</div>
+			</div>
+			<div class="odds">
+				<div v-for="(item, index) in oddsMain.correct_score" :key="index">
+					<div class="col-list-4 col-odd center"
+						:class="containBet(`00018-${index}`, betsList)"
+						@click="(e) => addBetList(
+							`00018-${index}`, 'correct_score', item?.name+'-draw', item?.odds, `${item?.name}`, 'Placar Exato'
+						)"
+						v-if="item?.header == 'Draw'"
+					>
+						{{item?.name}}
+						<span class="color-odd">{{parseFloat(item?.odds).toFixed(2)}}</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="odds">
+				<div class="col-list-4 col-lb center">{{matche?.away?.name}}</div>
+			</div>
+			<div class="odds">
+				<div v-for="(item, index) in oddsMain.correct_score" :key="index">
+					<div class="col-list-4 col-odd center"
+						:class="containBet(`00019-${index}`, betsList)"
+						@click="(e) => addBetList(
+							`00019-${index}`, 'correct_score', item?.name+'-away', item?.odds, `${item?.name}`, 'Placar Exato'
+						)"
+						v-if="item?.header == '2'"
+					>
+						{{item?.name}}
+						<span class="color-odd">{{parseFloat(item?.odds).toFixed(2)}}</span>
+					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="area-odds">
+		<div class="area-odds" v-if="oddsMain.half_time_full_time !== undefined">
 			<label class="teste">Intervalo / Final do Jogo</label>
 			<div class="odds">
-				<div class="col-list-4 col-odd center">
+				<div class="col-list-4 col-odd center"
+					:class="containBet(`00020`, betsList)"
+					@click="(e) => addBetList(
+						'00020', 'half_time_full_time', 'home-home', oddsMain.half_time_full_time[0]?.odds, `${matche?.home?.name} e ${matche?.home?.name}`, 'Intervalo / Final do Jogo'
+					)"
+				>
 					{{matche?.home?.name}} - {{matche?.home?.name}} <span class="color-odd">{{parseFloat(oddsMain.half_time_full_time[0]?.odds).toFixed(2)}}</span>
 				</div>
-				<div class="col-list-4 col-odd center">
+
+				<div class="col-list-4 col-odd center"
+					:class="containBet(`00021`, betsList)"
+					@click="(e) => addBetList(
+						'00021', 'half_time_full_time', 'home-draw', oddsMain.half_time_full_time[1]?.odds, `${matche?.home?.name} e Empate`, 'Intervalo / Final do Jogo'
+					)"
+				>
 					{{matche?.home?.name}} - Empate <span class="color-odd">{{parseFloat(oddsMain.half_time_full_time[1]?.odds).toFixed(2)}}</span>
 				</div>
-				<div class="col-list-4 col-odd center">
+
+				<div class="col-list-4 col-odd center"
+					:class="containBet(`00022`, betsList)"
+					@click="(e) => addBetList(
+						'00022', 'half_time_full_time', 'home-away', oddsMain.half_time_full_time[2]?.odds, `${matche?.home?.name} e ${matche?.away?.name}`, 'Intervalo / Final do Jogo'
+					)"
+				>
 					{{matche?.home?.name}} - {{matche?.away?.name}} <span class="color-odd">{{parseFloat(oddsMain.half_time_full_time[2]?.odds).toFixed(2)}}</span>
 				</div>
 			</div>
 
 			<div class="odds">
-				<div class="col-list-4 col-odd center">
+				<div class="col-list-4 col-odd center"
+					:class="containBet(`00023`, betsList)"
+					@click="(e) => addBetList(
+						'00023', 'half_time_full_time', 'draw-home', oddsMain.half_time_full_time[3]?.odds, `Empate e ${matche?.home?.name}`, 'Intervalo / Final do Jogo'
+					)"
+				>
 					Empate - {{matche?.home?.name}} <span class="color-odd">{{parseFloat(oddsMain.half_time_full_time[3]?.odds).toFixed(2)}}</span>
 				</div>
-				<div class="col-list-4 col-odd center">
+				<div class="col-list-4 col-odd center"
+					:class="containBet(`00024`, betsList)"
+					@click="(e) => addBetList(
+						'00024', 'half_time_full_time', 'draw-draw', oddsMain.half_time_full_time[4]?.odds, `Empate e Empate`, 'Intervalo / Final do Jogo'
+					)"
+				>
 					Empate - Empate <span class="color-odd">{{parseFloat(oddsMain.half_time_full_time[4]?.odds).toFixed(2)}}</span>
 				</div>
-				<div class="col-list-4 col-odd center">
+				<div class="col-list-4 col-odd center"
+					:class="containBet(`00025`, betsList)"
+					@click="(e) => addBetList(
+						'00025', 'half_time_full_time', 'draw-away', oddsMain.half_time_full_time[5]?.odds, `Empate e ${matche?.away?.name}`, 'Intervalo / Final do Jogo'
+					)"
+				>
 					Empate - {{matche?.away?.name}} <span class="color-odd">{{parseFloat(oddsMain.half_time_full_time[5]?.odds).toFixed(2)}}</span>
 				</div>
 			</div>
 
 			<div class="odds">
-				<div class="col-list-4 col-odd center">
+				<div class="col-list-4 col-odd center"
+					:class="containBet(`00026`, betsList)"
+					@click="(e) => addBetList(
+						'00026', 'half_time_full_time', 'away-home', oddsMain.half_time_full_time[6]?.odds, `${matche?.away?.name} e ${matche?.home?.name}`, 'Intervalo / Final do Jogo'
+					)"
+				>
 					{{matche?.away?.name}} - {{matche?.home?.name}} <span class="color-odd">{{parseFloat(oddsMain.half_time_full_time[6]?.odds).toFixed(2)}}</span>
 				</div>
-				<div class="col-list-4 col-odd center">
+				<div class="col-list-4 col-odd center"
+					:class="containBet(`00027`, betsList)"
+					@click="(e) => addBetList(
+						'00027', 'half_time_full_time', 'away-draw', oddsMain.half_time_full_time[7]?.odds, `${matche?.away?.name} e Empate`, 'Intervalo / Final do Jogo'
+					)"
+				>
 					{{matche?.away?.name}} - Empate <span class="color-odd">{{parseFloat(oddsMain.half_time_full_time[7]?.odds).toFixed(2)}}</span>
 				</div>
-				<div class="col-list-4 col-odd center">
+				<div class="col-list-4 col-odd center"
+					:class="containBet(`00028`, betsList)"
+					@click="(e) => addBetList(
+						'00028', 'half_time_full_time', 'away-away', oddsMain.half_time_full_time[8]?.odds, `${matche?.away?.name} e ${matche?.away?.name}`, 'Intervalo / Final do Jogo'
+					)"
+				>
 					{{matche?.away?.name}} - {{matche?.away?.name}} <span class="color-odd">{{parseFloat(oddsMain.half_time_full_time[8]?.odds).toFixed(2)}}</span>
 				</div>
 			</div>
 		</div>
 
-		<div class="area-odds">
+		<div class="area-odds" v-if="oddsMain.draw_no_bet !== undefined">
 			<label class="teste">Empate Anula Aposta</label>
 			<div class="odds">
-				<div class="col-list-6 col-odd">{{matche?.home?.name}} <span class="color-odd">{{parseFloat(oddsMain.draw_no_bet[0]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-6 col-odd">{{matche?.away?.name}} <span class="color-odd">{{parseFloat(oddsMain.draw_no_bet[1]?.odds).toFixed(2)}}</span></div>
+				<div class="col-list-6 col-odd"
+					:class="containBet(`00029`, betsList)"
+					@click="(e) => addBetList(
+						'00029', 'draw_no_bet', 'home', oddsMain.draw_no_bet[0]?.odds, `${matche?.home?.name}`, 'Empate Anula Aposta'
+					)"
+				>
+					{{matche?.home?.name}} <span class="color-odd">{{parseFloat(oddsMain.draw_no_bet[0]?.odds).toFixed(2)}}</span>
+				</div>
+
+				<div class="col-list-6 col-odd"
+					:class="containBet(`00030`, betsList)"
+					@click="(e) => addBetList(
+						'00030', 'draw_no_bet', 'away', oddsMain.draw_no_bet[1]?.odds, `${matche?.away?.name}`, 'Empate Anula Aposta'
+					)"
+				>
+					{{matche?.away?.name}} <span class="color-odd">{{parseFloat(oddsMain.draw_no_bet[1]?.odds).toFixed(2)}}</span>
+				</div>
 			</div>
 		</div>
 
-		<div class="area-odds">
+		<div class="area-odds" v-if="oddsMain.goalscorers !== undefined">
 			<label class="teste">1º Marcador</label>
 			<div class="odds">
 				<div v-for="(item, index) in oddsMain.goalscorers" :key="index">
-					<div class="col-list-4 col-odd" v-if="item?.header == 'First'">
+					<div class="col-list-4 col-odd" v-if="item?.header == 'First'"
+						:class="containBet(`00031-${index}`, betsList)"
+						@click="(e) => addBetList(
+							`00031-${index}`, 'goalscorers', `first-${item?.name}`, item?.odds, `${item?.name}`, '1º Marcador'
+						)"
+					>
 						{{item?.name}}
 						<span class="color-odd">{{parseFloat(item?.odds).toFixed(2)}}</span>
 					</div>
@@ -149,11 +342,16 @@
 			</div>
 		</div>
 
-		<div class="area-odds">
+		<div class="area-odds" v-if="oddsMain.goalscorers !== undefined">
 			<label class="teste">Último Marcador</label>
 			<div class="odds">
 				<div v-for="(item, index) in oddsMain.goalscorers" :key="index">
-					<div class="col-list-4 col-odd" v-if="item?.header == 'Last'">
+					<div class="col-list-4 col-odd" v-if="item?.header == 'Last'"
+						:class="containBet(`00032-${index}`, betsList)"
+						@click="(e) => addBetList(
+							`00032-${index}`, 'goalscorers', `last-${item?.name}`, item?.odds, `${item?.name}`, 'Ultimo Marcador'
+						)"
+					>
 						{{item?.name}}
 						<span class="color-odd">{{parseFloat(item?.odds).toFixed(2)}}</span>
 					</div>
@@ -161,11 +359,16 @@
 			</div>
 		</div>
 
-		<div class="area-odds">
+		<div class="area-odds" v-if="oddsMain.goalscorers !== undefined">
 			<label class="teste">Marcador a Qualquer Altura (Tempo Regulamentar)</label>
 			<div class="odds">
 				<div v-for="(item, index) in oddsMain.goalscorers" :key="index">
-					<div class="col-list-4 col-odd" v-if="item?.header == 'Anytime'">
+					<div class="col-list-4 col-odd" v-if="item?.header == 'Anytime'"
+						:class="containBet(`00033-${index}`, betsList)"
+						@click="(e) => addBetList(
+							`00033-${index}`, 'goalscorers', `anytime-${item?.name}`, item?.odds, `${item?.name}`, 'Marcador a Qualquer Altura (Tempo Regulamentar)'
+						)"
+					>
 						{{item?.name}}
 						<span class="color-odd">{{parseFloat(item?.odds).toFixed(2)}}</span>
 					</div>
@@ -173,18 +376,32 @@
 			</div>
 		</div>
 
-
-		<div class="area-odds">
+		<div class="area-odds" v-if="oddsMain.asian_handicap !== undefined">
 			<label class="teste">Handicap Asiático</label>
 			<div class="odds">
 				<div class="col-list-3 col-odd">{{matche?.home?.name}}</div>
-				<div class="col-list-3 col-odd">{{oddsMain.asian_handicap[0]?.handicap}} <span class="color-odd">{{parseFloat(oddsMain.asian_handicap[0]?.odds).toFixed(2)}}</span></div>
+				<div class="col-list-3 col-odd"
+					:class="containBet(`00034`, betsList)"
+					@click="(e) => addBetList(
+						'00034', 'asian_handicap', 'away', oddsMain.asian_handicap[0]?.odds, `${oddsMain.asian_handicap[0]?.handicap}`, 'Handicap Asiático'
+					)"
+				>
+					{{oddsMain.asian_handicap[0]?.handicap}} <span class="color-odd">{{parseFloat(oddsMain.asian_handicap[0]?.odds).toFixed(2)}}</span>
+				</div>
+
 				<div class="col-list-3 col-odd">{{matche?.away?.name}}</div>
-				<div class="col-list-3 col-odd">{{oddsMain.asian_handicap[1]?.handicap}} <span class="color-odd">{{parseFloat(oddsMain.asian_handicap[1]?.odds).toFixed(2)}}</span></div>
+				<div class="col-list-3 col-odd"
+					:class="containBet(`00035`, betsList)"
+					@click="(e) => addBetList(
+						'00035', 'asian_handicap', 'away', oddsMain.asian_handicap[1]?.odds, `${oddsMain.asian_handicap[1]?.handicap}`, 'Handicap Asiático'
+					)"
+				>
+					{{oddsMain.asian_handicap[1]?.handicap}} <span class="color-odd">{{parseFloat(oddsMain.asian_handicap[1]?.odds).toFixed(2)}}</span>
+				</div>
 			</div>
 		</div>
 
-		<div class="area-odds">
+		<div class="area-odds" v-if="oddsMain.goal_line !== undefined">
 			<label class="teste">Gols +/-</label>
 			<div class="odds">
 				<div class="col-list-4 col-lb"></div>
@@ -194,12 +411,27 @@
 			
 			<div class="odds">
 				<div class="col-list-4 col-odd center bg-gray-1">{{oddsMain.goal_line[0]?.name}}</div>
-				<div class="col-list-4 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsMain.goal_line[0]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-4 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsMain.goal_line[1]?.odds).toFixed(2)}}</span></div>
+				<div class="col-list-4 col-odd center bg-gray-2"
+					:class="containBet(`00036`, betsList)"
+					@click="(e) => addBetList(
+						'00036', 'goal_line', oddsMain.goal_line[0]?.name+'-over', oddsMain.goal_line[0]?.odds, `Mais de ${oddsMain?.goal_line?.[0]?.name}`, 'Gols +/-'
+					)"
+				>
+					<span class="color-odd">{{parseFloat(oddsMain.goal_line[0]?.odds).toFixed(2)}}</span>
+				</div>
+
+				<div class="col-list-4 col-odd center bg-gray-2"
+					:class="containBet(`00037`, betsList)"
+					@click="(e) => addBetList(
+						'00037', 'goal_line', oddsMain.goal_line[1]?.name+'-over', oddsMain.goal_line[1]?.odds, `Menos de ${oddsMain?.goal_line?.[1]?.name}`, 'Gols +/-'
+					)"
+				>
+					<span class="color-odd">{{parseFloat(oddsMain.goal_line[1]?.odds).toFixed(2)}}</span>
+				</div>
 			</div>
 		</div>
 
-		<div class="area-odds">
+		<div class="area-odds" v-if="oddsMain.corners !== undefined">
 			<label class="teste">Escanteios</label>
 			<div class="odds">
 				<div class="col-list-3 col-lb"></div>
@@ -210,352 +442,51 @@
 			
 			<div class="odds">
 				<div class="col-list-3 col-odd center bg-gray-1">{{oddsMain.corners[0]?.name}}</div>
-				<div class="col-list-3 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsMain.corners[0]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-3 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsMain.corners[1]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-3 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsMain.corners[2]?.odds).toFixed(2)}}</span></div>
-			</div>
-		</div>
+				<div class="col-list-3 col-odd center bg-gray-2"
+					:class="containBet(`00038`, betsList)"
+					@click="(e) => addBetList(
+						'00038', 'corners', oddsMain.corners[0]?.name+'-over', oddsMain.corners[0]?.odds, `Mais de ${oddsMain?.corners?.[0]?.name}`, 'Escanteios'
+					)"
+				>
+					<span class="color-odd">{{parseFloat(oddsMain.corners[0]?.odds).toFixed(2)}}</span>
+				</div>
 
+				<div class="col-list-3 col-odd center bg-gray-2"
+					:class="containBet(`00039`, betsList)"
+					@click="(e) => addBetList(
+						'00039', 'corners', oddsMain.corners[1]?.name+'-exact', oddsMain.corners[1]?.odds, `Etaxos ${oddsMain?.corners?.[1]?.name}`, 'Escanteios'
+					)"
+				>
+					<span class="color-odd">{{parseFloat(oddsMain.corners[1]?.odds).toFixed(2)}}</span>
+				</div>
 
-
-		<!--
-
-		<div class="area-odds">
-			<label class="teste">1º Gol</label>
-			<div class="odds">
-				<div class="col-list-4 col-odd">Vila Nova GO <span class="color-odd">3.10</span></div>
-				<div class="col-list-4 col-odd">Nenhum <span class="color-odd">2.81</span></div>
-				<div class="col-list-4 col-odd">Bahia BA <span class="color-odd">2.55</span></div>
-			</div>
-		</div>
-		<div class="area-odds">
-			<label class="teste">Último Gol</label>
-			<div class="odds">
-				<div class="col-list-4 col-odd">Red Bull Bragantino SP <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">Nenhum <span class="color-odd">1.70</span></div>
-				<div class="col-list-4 col-odd">Avaí SC <span class="color-odd">1.70</span></div>
+				<div class="col-list-3 col-odd center bg-gray-2"
+					:class="containBet(`00040`, betsList)"
+					@click="(e) => addBetList(
+						'00040', 'corners', oddsMain.corners[2]?.name+'-under', oddsMain.corners[2]?.odds, `Menos de ${oddsMain?.corners?.[2]?.name}`, 'Escanteios'
+					)"
+				>
+					<span class="color-odd">{{parseFloat(oddsMain.corners[2]?.odds).toFixed(2)}}</span>
+				</div>
 			</div>
 		</div>-->
-
-		<!--
-		<div class="area-odds">
-			<label class="teste">Avaí Anula Aposta</label>
-			<div class="odds">
-				<div class="col-list-6 col-odd">Red Bull Bragantino SP <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Empate <span class="color-odd">1.70</span></div>
-			</div>
-		</div>-->
-
-		<!--
-		<div class="area-odds">
-			<label class="teste">Total por Equipe</label>
-			<div class="odds">
-				<div class="col-list-6 col-lb center">Red Bul Bragantino SP</div>
-				<div class="col-list-6 col-lb center">Avaí SC</div>
-			</div>
-			<div class="odds">
-				<div class="col-list-2 col-lb">-</div>
-				<div class="col-list-2 col-lb">Mais de</div>
-				<div class="col-list-2 col-lb">Menos de</div>
-				<div class="col-list-2 col-lb">-</div>
-				<div class="col-list-2 col-lb">Mais de</div>
-				<div class="col-list-2 col-lb">Menos de</div>
-			</div>
-			<div class="odds">
-				<div class="col-list-2 col-odd center bg-gray-1">0.5</div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.55</span></div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.55</span></div>
-				<div class="col-list-2 col-odd center bg-gray-1">0.5</div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.55</span></div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.55</span></div>
-			</div>
-			<div class="odds">
-				<div class="col-list-2 col-odd center bg-gray-1">1.5</div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.81</span></div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.55</span></div>
-				<div class="col-list-2 col-odd center bg-gray-1">1.5</div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.81</span></div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.55</span></div>
-			</div>
-			<div class="odds">
-				<div class="col-list-2 col-odd center bg-gray-1">2.5</div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.81</span></div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.55</span></div>
-				<div class="col-list-2 col-odd center bg-gray-1">2.5</div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.81</span></div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.55</span></div>
-			</div>
-			<div class="odds">
-				<div class="col-list-2 col-odd center bg-gray-1">3.5</div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.81</span></div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.55</span></div>
-				<div class="col-list-2 col-odd center bg-gray-1">3.5</div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.81</span></div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.55</span></div>
-			</div>
-			<div class="odds">
-				<div class="col-list-2 col-odd center bg-gray-1">4.5</div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.81</span></div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.55</span></div>
-				<div class="col-list-2 col-odd center bg-gray-1">4.5</div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.81</span></div>
-				<div class="col-list-2 col-odd center bg-gray-2"><span class="color-odd">2.55</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">Ímpar/Par</label>
-			<div class="odds">
-				<div class="col-list-6 col-odd">Par <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Ímpar <span class="color-odd">1.70</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">Red Bull Bragantino Ímpar/Par</label>
-			<div class="odds">
-				<div class="col-list-6 col-odd">Par <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Ímpar <span class="color-odd">1.70</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">Avaí SC Ímpar/Par</label>
-			<div class="odds">
-				<div class="col-list-6 col-odd">Par <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Ímpar <span class="color-odd">1.70</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">Qual equipe vai marcar</label>
-			<div class="odds">
-				<div class="col-list-6 col-odd">Nenhum <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Apenas Red bull SP <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Apenas Avaí SC <span class="color-odd">1.70</span></div>
-				<div class="col-list-6 col-odd">Ambas as equipes <span class="color-odd">2.00</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">Baliza Inviolada po Equipe</label>
-			<div class="odds">
-				<div class="col-list-6 col-lb center">Red Bul Bragantino SP</div>
-				<div class="col-list-6 col-lb center">Avaí SC</div>
-			</div>
-			<div class="odds">
-				<div class="col-list-3 col-odd">Sim <span class="color-odd">2.00</span></div>
-				<div class="col-list-3 col-odd">Não <span class="color-odd">2.00</span></div>
-				<div class="col-list-3 col-odd">Sim <span class="color-odd">1.70</span></div>
-				<div class="col-list-3 col-odd">Não <span class="color-odd">2.00</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">Red bull para vencer sem sofre gol</label>
-			<div class="odds">
-				<div class="col-list-6 col-odd">Sim <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Não <span class="color-odd">1.70</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">Avaí SC para vencer sem sofre gol</label>
-			<div class="odds">
-				<div class="col-list-6 col-odd">Sim <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Não <span class="color-odd">1.70</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">Total para ambos os times marcarem</label>
-			<div class="odds">
-				<div class="col-list-6 col-odd">Mais de 2.5 e Sim <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Menos de 2.5 e Sim <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Mais de 2.5 e Não <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Menos de 2.5 e Não <span class="color-odd">2.00</span></div>
-			</div>
-		</div>
-
-		
-
-		<div class="area-odds">
-			<label class="teste">Quando Será Marcado o 1º Gol (Intervalo de 15 Minutos)</label>
-			<div class="odds">
-				<div class="col-list-4 col-odd">1-15 <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">16-30 <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">31-45 <span class="color-odd">2.00</span></div>
-			</div>
-			<div class="odds">
-				<div class="col-list-4 col-odd">46-60 <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">61-75 <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">76-90 <span class="color-odd">2.00</span></div>
-			</div>
-
-			<div class="odds">
-				<div class="col-list-4 col-odd">Nenhum <span class="color-odd">2.00</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">Quando Será Marcado o 1º Gol (Intervalo de 10 Minutos)</label>
-			<div class="odds">
-				<div class="col-list-4 col-odd">1-10 <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">11-20 <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">21-30 <span class="color-odd">2.00</span></div>
-			</div>
-			<div class="odds">
-				<div class="col-list-4 col-odd">31-40 <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">41-50 <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">51-60 <span class="color-odd">2.00</span></div>
-			</div>
-
-			<div class="odds">
-				<div class="col-list-4 col-odd">31-40 <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">41-50 <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">51-60 <span class="color-odd">2.00</span></div>
-			</div>
-
-			<div class="odds">
-				<div class="col-list-4 col-odd">61-70 <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">71-80 <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">81-90 <span class="color-odd">2.00</span></div>
-			</div>
-
-			<div class="odds">
-				<div class="col-list-4 col-odd">Nenhum <span class="color-odd">2.00</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">10 minutos - Resultado do Jogo</label>
-			<div class="odds">
-				<div class="col-list-6 col-lb center bg-gray-2"> - </div>
-				<div class="col-list-6 col-lb center bg-gray-2">10</div>
-			</div>
-			<div class="odds">
-				<div class="col-list-6 col-odd-lb bg-gray-2">Red bull Bragantino SP</div>
-				<div class="col-list-6 col-odd center"><span class="color-odd">2.00</span></div>
-			</div>
-			<div class="odds">
-				<div class="col-list-6 col-odd-lb bg-gray-2">Empate</div>
-				<div class="col-list-6 col-odd center"><span class="color-odd">2.00</span></div>
-			</div>
-			<div class="odds">
-				<div class="col-list-6 col-odd-lb bg-gray-2">Avaí SC</div>
-				<div class="col-list-6 col-odd center"><span class="color-odd">2.00</span></div>
-			</div>
-			
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">Expulsão</label>
-			<div class="odds">
-				<div class="col-list-6 col-odd">Sim <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Não <span class="color-odd">1.70</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">Red bull bragantino SP Expulsão</label>
-			<div class="odds">
-				<div class="col-list-6 col-odd">Sim <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Não <span class="color-odd">1.70</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">Avaí SC Expulsão</label>
-			<div class="odds">
-				<div class="col-list-6 col-odd">Sim <span class="color-odd">2.00</span></div>
-				<div class="col-list-6 col-odd">Não <span class="color-odd">1.70</span></div>
-			</div>
-		</div>
-
-		<div class="area-odds">
-			<label class="teste">1º Gol e Resultado Final</label>
-			<div class="odds">
-				<div class="col-list-4 col-odd">Red bull bragantino SP Gol e Red bull bragantino SP <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">Red bull bragantino SP Gol e Empate <span class="color-odd">1.70</span></div>
-				<div class="col-list-4 col-odd">Red bull bragantino SP Gol e Avaí SC <span class="color-odd">1.70</span></div>
-			</div>
-
-			<div class="odds">
-				<div class="col-list-4 col-odd">Avaí SC Gol e Red bull bragantino SP <span class="color-odd">2.00</span></div>
-				<div class="col-list-4 col-odd">Avaí SC Gol e Empate <span class="color-odd">1.70</span></div>
-				<div class="col-list-4 col-odd">Avaí SC e Avaí SC <span class="color-odd">1.70</span></div>
-			</div>
-
-			<div class="odds">
-				<div class="col-list-4 col-odd">Sem Gols <span class="color-odd">2.00</span></div>
-			</div>
-		</div>
-		-->
-
 	</div>
 </template>
 
 <script type="text/javascript">
-	import BetService from "../../../services/bet.service";
+	import { mapGetters } from 'vuex';
+	import TripleOdds from '../LayoutsOdds/TripleOdds.vue'
 
 	export default {
-
-	    data(){
-	    	return {
-	    		matche: [],
-	    		oddsMain: {
-	    			full_time_result: [],
-	    			//full_time_result_enhanced_prices: [],
-					double_chance: [],
-					goals_over_under: [],
-					both_teams_to_score: [],
-					result_both_teams_to_score: [],
-					correct_score: [],
-					half_time_full_time: [],
-					draw_no_bet: [],
-					goalscorers: [],
-					asian_handicap: [],
-					goal_line: [],
-					corners: [],
-					handicap_result: [],
-					alternative_handicap_result: [],
-					bet_boost: [],//nao implementado
-	    		},
-	    		
-	    	}
+		components: {
+		    TripleOdds,
 	    },
 
-	    mounted() {
-	    	this.$store.dispatch('bets/setLoading', true);
-			BetService.getMatcheOdds(this.$route.params.idLeague, this.$route.params.idMache).then(
-				(response) => {
-					this.matche = response.data.match;
-					let dataOddsMain = response.data.odds.main.sp;
-				    
-				    this.oddsMain.full_time_result = dataOddsMain.full_time_result.odds;
-					this.oddsMain.double_chance = dataOddsMain.double_chance.odds;
-					this.oddsMain.goals_over_under = dataOddsMain.goals_over_under.odds;
-					this.oddsMain.both_teams_to_score = dataOddsMain.both_teams_to_score.odds;
-					this.oddsMain.result_both_teams_to_score = dataOddsMain.result_both_teams_to_score.odds;
-					this.oddsMain.correct_score = dataOddsMain.correct_score.odds;
-					this.oddsMain.half_time_full_time = dataOddsMain.half_time_full_time.odds;
-					this.oddsMain.draw_no_bet = dataOddsMain.draw_no_bet.odds;
-					this.oddsMain.goalscorers = dataOddsMain.goalscorers.odds;
-					this.oddsMain.asian_handicap = dataOddsMain.asian_handicap.odds;
-					this.oddsMain.goal_line = dataOddsMain.goal_line.odds;
-					this.oddsMain.corners = dataOddsMain.corners.odds;
-					this.oddsMain.bet_boost = dataOddsMain.bet_boost.odds;
-
-					//this.oddsMain.full_time_result_enhanced_prices = dataOddsMain.full_time_result_–_enhanced_prices.odds;
-				    //this.oddsMain.handicap_result = dataOddsMain.handicap_result.odds;
-					//this.oddsMain.alternative_handicap_result = dataOddsMain.alternative_handicap_result.odds;
-
-					this.$store.dispatch('bets/setLoading', false);
-				},
-				(error) => {
-				    this.content = 'algum erro aconteceu'
-				}
-			);
-		},
+		computed: {
+	    	...mapGetters({
+	        	odds: 'odds/oddsPrematcheMain',
+	        	matcheOdds: 'odds/matcheOdds',
+	    	})
+	    },
 	}
 </script>

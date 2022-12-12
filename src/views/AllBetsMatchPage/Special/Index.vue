@@ -19,7 +19,7 @@
 				<div class="col-list-3 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsSpecials.to_score_in_half[1]?.odds).toFixed(2)}}</span></div>
 				<div class="col-list-3 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsSpecials.to_score_in_half[3]?.odds).toFixed(2)}}</span></div>
 			</div>
-		</div>-->
+		</div>
 
 
 		<div class="area-odds">
@@ -149,55 +149,24 @@
 				</div>
 				
 			</div>
-		</div>
+		</div>-->
 	</div>
 </template>
 
 <script type="text/javascript">
-	import BetService from "../../../services/bet.service";
+	import { mapGetters } from 'vuex';
+	import TripleOdds from '../LayoutsOdds/TripleOdds.vue'
 
 	export default {
-
-	    data(){
-	    	return {
-	    		matche: [],
-	    		oddsSpecials: {
-					specials: [],//a fazer
-					to_score_in_half: [],
-					to_score_a_penalty: [],
-					to_miss_a_penalty: [],
-					own_goal: [],
-					team_performances: [],//a fazer
-
-					player_shots_on_target: [],
-					player_shots: [],
-	    		},
-	    		
-	    	}
+		components: {
+		    TripleOdds,
 	    },
 
-	    mounted() {
-	    	this.$store.dispatch('bets/setLoading', true);
-			BetService.getMatcheOdds(this.$route.params.idLeague, this.$route.params.idMache).then(
-				(response) => {
-					this.matche = response.data.match;
-					let dataOddsSpecials = response.data.odds.specials.sp;
-					this.oddsSpecials.specials = dataOddsSpecials.specials.odds;
-					this.oddsSpecials.to_score_in_half = dataOddsSpecials.to_score_in_half.odds;
-					this.oddsSpecials.to_score_a_penalty = dataOddsSpecials.to_score_a_penalty.odds;
-					this.oddsSpecials.to_miss_a_penalty = dataOddsSpecials.to_miss_a_penalty.odds;
-					this.oddsSpecials.own_goal = dataOddsSpecials.own_goal.odds;
-					this.oddsSpecials.team_performances = dataOddsSpecials.team_performances.odds;
-					this.oddsSpecials.player_shots_on_target = dataOddsSpecials.player_shots_on_target.odds;
-					this.oddsSpecials.player_shots = dataOddsSpecials.player_shots.odds;
-					
-					
-					this.$store.dispatch('bets/setLoading', false);
-				},
-				(error) => {
-				    this.content = 'algum erro aconteceu'
-				}
-			);
-		},
+		computed: {
+	    	...mapGetters({
+	        	odds: 'odds/oddsPrematcheMain',
+	        	matcheOdds: 'odds/matcheOdds',
+	    	})
+	    },
 	}
 </script>

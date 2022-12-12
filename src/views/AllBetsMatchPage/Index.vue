@@ -2,21 +2,21 @@
 	<div class="title-main-sport-with-country">
 		<img src="@/assets/icons-sports/futebol.png" />
 		<div>
-			<label>{{matche?.home?.name}} x {{matche?.away?.name}}</label>
-			<label>Futebol&nbsp;<font-awesome-icon icon="fa-solid fa-arrow-right" />&nbsp;{{matche?.league?.name}}</label>
+			<label>{{matche?.team_home_name}} x {{matche?.team_away_name}}</label>
+			<label>Futebol&nbsp;<font-awesome-icon icon="fa-solid fa-arrow-right" />&nbsp;{{matche?.league?.label_name}}</label>
 		</div>
 	</div>
 	<div class="filter-top">
-		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/principal'" active-class="active">Principal</router-link>
-		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/asian-bets'" active-class="active">Apostas asiáticas</router-link>
-		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/gols'" active-class="active">Gols</router-link>
-		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/tempos'" active-class="active">1º Tempo / 2º Tempo</router-link>
-		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/escanteios'" active-class="active">Escanteios</router-link>
-		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/cartoes'" active-class="active">Cartões</router-link>
-		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/jogador'" active-class="active">Jogador</router-link>
-		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/minutos'" active-class="active">Minutos</router-link>
-		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/especial'" active-class="active">Especial</router-link>
-		<router-link :to="'/bets-match/'+idLeague+'/'+idMatche+'/buscar'" active-class="active">Buscar</router-link>
+		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/principal'" active-class="active">Principal</router-link>
+		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/asian-bets'" active-class="active">Apostas asiáticas</router-link>
+		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/gols'" active-class="active">Gols</router-link>
+		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/tempos'" active-class="active">1º Tempo / 2º Tempo</router-link>
+		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/escanteios'" active-class="active">Escanteios</router-link>
+		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/cartoes'" active-class="active">Cartões</router-link>
+		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/jogador'" active-class="active">Jogador</router-link>
+		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/minutos'" active-class="active">Minutos</router-link>
+		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/especial'" active-class="active">Especial</router-link>
+		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/buscar'" active-class="active">Buscar</router-link>
 		<!--<router-link to="/bets-match/handicap" active-class="active">Handicap</router-link>-->
 	</div>
 	<label class="date">Sexta-feira, 08 de julho, 19:00hs</label>
@@ -32,23 +32,19 @@
 	    data(){
 	    	return {
 	    		matche: [],
-	    		idLeague: this.$route.params.idLeague,
-	    		idMatche: this.$route.params.idMache,
 	    	}
 	    },
 
 	    methods: {
-	    	msToTime(utcSeconds) {
-	    		let d = new Date(utcSeconds*1000);
-			    return d.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-			}
+	    	
 	    },
 
 	    mounted() {
 	    	this.$store.dispatch('bets/setLoading', true);
-			BetService.getMatcheOdds(this.$route.params.idLeague, this.$route.params.idMache).then(
+			BetService.getMatcheOdds(this.$route.params.sportId, this.$route.params.leagueId, this.$route.params.matcheId).then(
 				(response) => {
-					this.matche = response.data.match;
+					this.matche = response.data.data.item;
+					this.$store.dispatch('odds/pupulateOdds', response.data.data.item);
 					this.$store.dispatch('bets/setLoading', false);
 				},
 				(error) => {

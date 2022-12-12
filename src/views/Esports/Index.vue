@@ -1,14 +1,14 @@
 <template>
 	<div class="area">
-		<div class="col-6">
+		<div class="col-lg-6 col-md-6 col-sm-12">
 			<SlideShow />
 			<BestMatch />
 			<Live />
 		</div>
-		<div class="col-6">
+		<div class="col-lg-6 col-md-6 col-sm-12">
 			<BestListDestak />
-			<Competition :competition="libertadores" />
-			<Competition :competition="BrasileiroSerieB" />
+			<!--<Competition :competition="libertadores" />
+			<Competition :competition="BrasileiroSerieB" />-->
 		</div>
 	</div>
 </template>
@@ -18,7 +18,7 @@
 	import BestMatch from './BestMatch/Index.vue'
 	import BestListDestak from './BestListDestak/Index.vue'
 	import Live from './Lives/Index.vue'
-	import Competition from '../../components/Competition/Index.vue'
+	//import Competition from '../../components/Competition/Index.vue'
 	export default {
     	name: 'Esports',
 	    components: {
@@ -26,7 +26,7 @@
 	    	BestMatch,
 	    	BestListDestak,
 		    Live,
-		    Competition,
+		    //Competition,
 	    },
 	    data(){
 	    	return {
@@ -84,5 +84,6 @@
 </script>
 
 <style scoped>
-	div.area {width:100%; float:left; display:flex;}
+	div.area {width:100%; float:left; display:flex; flex-wrap:wrap;}
+
 </style>

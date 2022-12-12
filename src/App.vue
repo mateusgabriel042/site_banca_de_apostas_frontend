@@ -32,6 +32,7 @@
 	import Sidebar from './components/Sidebar/Index.vue'
 	import Main from './components/Main/Index.vue'
 	import AreaBets from './components/AreaBets/Index.vue'
+	import BetService from "./services/bet.service";
 	export default {
     	name: 'App',
 	    components: {
@@ -39,7 +40,10 @@
 	    	Sidebar,
 	    	Main,
 	    	AreaBets
-	    }
+	    },
+	    mounted() {
+			this.$store.dispatch('bets/initCountryLeagues');
+		},
 	}
 </script>
 
@@ -135,7 +139,7 @@
 	/*lista de poartidas por horarios*/
 	div.match-list-by-hour {}
 
-	.odd-active {background-color:#e8e8e8 !important; color:#17202a !important;}
+	div.odd-active {background-color:#e8e8e8 !important; color:#17202a !important;}
 
 
 	::-webkit-scrollbar {width:6px; height:5px;}
@@ -149,6 +153,12 @@
 	div.col-area-sidebar {float:left; width:210px;}
 	div.col-area-main {float:left; width:calc(100vw - 210px - 250px);}
 	div.col-area-bets {float:left; width:250px;}
+
+	@media (max-width:1100px){
+		div.col-area-sidebar {width:40px;}
+		div.col-area-bets {width:200px;}
+		div.col-area-main {float:left; width:calc(100vw - 40px - 200px);}
+	}
 </style>
 
 

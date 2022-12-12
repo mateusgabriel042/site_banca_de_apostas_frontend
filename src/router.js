@@ -42,8 +42,10 @@ const routes = [
 	    ],
 	},
 
-	{path: '/sports/1',  component: lazyLoad('Filters/Football')},
-	{path: '/sports/2',  component: lazyLoad('Filters/Basketball')},
+	{path: '/sports/:sportId',  component: lazyLoad('Filters/Football')},
+	{path: '/competition/:countryCode/:sportId/:leagueId',  component: lazyLoad('CompetitionPage')},
+	
+	/*{path: '/sports/2',  component: lazyLoad('Filters/Basketball')},
 	{path: '/sports/3',  component: lazyLoad('Filters/Tennis')},
 	{path: '/sports/4',  component: lazyLoad('Filters/TableTennis')},
 	{path: '/sports/5',  component: lazyLoad('Filters/Volleyball')},
@@ -52,11 +54,9 @@ const routes = [
 	{path: '/sports/8',  component: lazyLoad('Filters/Baseball')},
 	{path: '/sports/9',  component: lazyLoad('Filters/FootballAmerican')},
 	{path: '/sports/10', component: lazyLoad('Filters/MMA')},
-	{path: '/sports/11', component: lazyLoad('Filters/Boxing')},
-
-	{path: '/competicao/:nameLeague?/:idLeague?', component: lazyLoad('CompetitionPage')},
+	{path: '/sports/11', component: lazyLoad('Filters/Boxing')},*/
 	
-	{path: '/bets-match/:idLeague/:idMache', component: lazyLoad('AllBetsMatchPage'),
+	{path: '/bets-match/:sportId/:leagueId/:matcheId', component: lazyLoad('AllBetsMatchPage'),
 		children: [
 			{path: 'principal', component: lazyLoad('AllBetsMatchPage/Main')},
 			{path: 'asian-bets', component: lazyLoad('AllBetsMatchPage/AsianBets')},
@@ -71,7 +71,7 @@ const routes = [
 	    ],
 	},
 
-	{path: '/bets-match-live/:idLeague/:idMache', component: lazyLoad('AllBetsMatchLivePage'),
+	/*{path: '/bets-match-live/:idLeague/:idMache', component: lazyLoad('AllBetsMatchLivePage'),
 		children: [
 			{path: 'principal', component: lazyLoad('AllBetsMatchLivePage/Main')},
 			{path: 'asian-bets', component: lazyLoad('AllBetsMatchLivePage/AsianBets')},
@@ -84,7 +84,7 @@ const routes = [
 			{path: 'especial', component: lazyLoad('AllBetsMatchLivePage/Special')},
 			{path: 'buscar', component: lazyLoad('AllBetsMatchLivePage/Search')},
 	    ],
-	},
+	},*/
 
 	{path: '/tourneys/best', component: lazyLoad('BestsLists')},
 	{path: '/tourneys', component: lazyLoad('Championships')},

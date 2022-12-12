@@ -29,14 +29,14 @@
 					<div class="col-6">
 						<div class="group-input">
 							<label>CPF</label>
-							<input type="text" v-model="dataUser.cpf" />
+							<input v-mask="'###.###.###-##'" placeholder="000.000.000-00" v-model="dataUser.cpf" />
 						</div>
 					</div>
 
 					<div class="col-6">
 						<div class="group-input">
 							<label>Data de nascimento</label>
-							<input type="text" v-model="dataUser.birth_date" />
+							<input v-mask="'##/##/####'" placeholder="DD/MM/AAAA"  v-model="dataUser.birth_date" />
 						</div>
 					</div>
 				</div>
@@ -55,7 +55,7 @@
 						<div class="group-input">
 							<label>Telefone</label>
 							<input type="text" class="ddd-cellphone cellphone" v-model="dataUser.ddd_country" maxlength="4" />
-							<input type="text" class="cellphone" v-model="dataUser.mobile_phone" placeholder="(__)_____-____" />
+							<input type="text" class="cellphone" v-mask="'(##) #####-####'" v-model="dataUser.mobile_phone" placeholder="(__) _____-____" />
 						</div>
 					</div>
 				</div>
@@ -136,9 +136,11 @@
 </template>
 
 <script>
-
+	import {mask} from 'vue-the-mask'
 	export default {
 		name: 'ModalRegisterUser',
+
+		directives: {mask},
 
 		data() {
 		    return {
@@ -199,13 +201,13 @@
 </script>
 
 <style scoped>
-	div.background-box-modal {position:fixed; width:100vw; height:100vh; background-color:rgba(0,0,0,0.5); margin:0 auto; top:0px; left:0px; z-index:3; display:flex; justify-content:center; align-items:center;}
-	div.area-modal-register-user {float:left; min-width:750px; max-width:750px; height:70%; background-color:#c5c5c5; border-radius:10px;}
-	div.area-modal-register-user header {width:100%; padding:15px 0px; background:url("@/assets/ns_banner.png") no-repeat; background-size:cover; display:flex; justify-content:center; border-radius:10px 10px 0px 0px;}
+	div.background-box-modal {position:fixed; width:100vw; height:100vh; background-color:rgba(0,0,0,0.5); margin:0 auto; top:0px; left:0px; z-index:100; display:flex; justify-content:center; align-items:center;}
+	div.area-modal-register-user {float:left; min-width:750px; max-width:750px; height:70%; background-color:#c5c5c5; border-radius:10px; overflow-y:auto;}
+	div.area-modal-register-user header {width:100%; padding:15px 0px; background:url("@/assets/ns_banner.png") no-repeat; background-size:cover; display:flex; justify-content:center; border-radius:8px 0px 0px 0px;}
 	div.area-modal-register-user header img {width:120px;}
 	div.area-modal-register-user header button {position:absolute; width:28px; height:28px; border:none; margin-left:700px; margin-top:-10px; background-color:#e8e8e8; border-radius:100%; padding-top:3px; color:#666666;}
 
-	div.area-modal-register-user form {height:calc(100% - 80px); padding:15px; width:100%; overflow-y:auto;}
+	div.area-modal-register-user form {padding:15px; width:100%;}
 	div.area-modal-register-user form h4 {font-size:16px; color:#535353; margin-top:15px;}
 	div.area-modal-register-user form h4:first-child {margin-top:0px;}
 	div.area-modal-register-user form p {width:100%; font-size:11px; color:#535353;}

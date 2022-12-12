@@ -14,6 +14,16 @@
 					<router-link to="/tourneys" active-class="active">Campeonatos</router-link>
 				</div>
 
+				<button class="btn-toggle-nav-mobile" @click="toggleNavMobile()">Menu</button>
+
+				<div class="area-links-nav-mobile" id="area-links-nav-mobile">
+					<router-link to="/esports" active-class="active-mobile">Esportes</router-link>
+					<router-link to="/lives/futebol" active-class="active-mobile">AoVivo</router-link>
+					<router-link to="/tourneys/best" active-class="active-mobile">Melhores Listas</router-link>
+					<router-link to="/sports/1" active-class="active-mobile">Só Futebol</router-link>
+					<router-link to="/tourneys" active-class="active-mobile">Campeonatos</router-link>
+				</div>
+
 				<div v-if="loggedIn == false">
 					<form @submit="handleLogin">
 						<div class="area-inputs">
@@ -137,6 +147,16 @@
 				});
 		    },
 
+		    toggleNavMobile(){
+		    	let nav = document.getElementById('area-links-nav-mobile');
+		    	if(nav.style.display === 'flex'){
+		    		nav.style.display = 'none';
+		    	}else{
+		    		nav.style.display = 'flex';
+		    	}
+		    	
+		    }
+
 		},
 		mounted() {
 		    /*UserService.getUserBoard().then(
@@ -159,6 +179,11 @@
 
 	div.area-links-nav a {float:left; color:#fdfdfe; text-decoration:none; margin:0px 10px; font-size:15px;}
 	div.area-links-nav a:hover {text-decoration:underline;}
+	
+	button.btn-toggle-nav-mobile {display:none; background-color:#3b3c3d; position:absolute; border:none; left:190px; top:35px; color:#fdfdfe; padding:3px 20px; border-radius:5px; font-size:14px;}
+	div.area-links-nav-mobile {display:none; flex-wrap:wrap; flex-direction:column; position:absolute; left:190px; top:70px; background-color:#3b3c3d; z-index:100; border-radius:5px; padding:7px 0px;}
+	div.area-links-nav-mobile a {float:left; width:100%; color:#fdfdfe; font-size:14px; padding:7px 20px; text-decoration:none;}
+	div.area-links-nav-mobile a:hover {text-decoration:underline;}
 
 	form div.area-inputs {width:100%; display:flex; flex-wrap:wrap; align-items:center; align-content:center;}
 	form div.area-inputs input {width:110px; margin-right:7px; border-radius:3px; border:none; padding:6px 8px; background-color:#e8e8e8; color:#757575; font-size:13px;}
@@ -202,6 +227,11 @@
 	@keyframes spin {
 	    from {transform:rotate(0deg);}
 	    to {transform:rotate(360deg);}
+	}
+
+	@media (min-width:0px) and (max-width:799px){
+		button.btn-toggle-nav-mobile {display:block;}
+		div.area-links-nav {display:none;}
 	}
 
 </style>

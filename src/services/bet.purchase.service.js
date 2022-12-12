@@ -1,27 +1,26 @@
 import api from './api';
 
 class BetPurchaseService {
-	async purchaseBet(bets, priceTotalBets) {
-
+	async purchaseBet(betsSelected, priceTotalBets) {
 		let dataFinal = {
 			bets: [],
-			value_bet: priceTotalBets,
+			invested_money: priceTotalBets,
 		};
 
-		bets.forEach(function(item, index){
+		betsSelected.forEach(function(item, index){
 			dataFinal.bets.push({
-				id_league: item.idLeague,
-	            bet: item.bet,
-	            bet_id: item.idBet,
-	            id_matche: item.idMatche,
-	            type_bet: item.typeBet,
-	            type_event: item.typeEvent,
+				apievents_sport_id: item.info.apievents_sport_id,
+				type_event: item.ids.typeEvent,
+				customer_bet: item.info.customer_bet,
+				type_bet: item.ids.typeBet,
+				subtype_bet: item.ids.subtypeBet,
+				bet365_matche_id: item.ids.matcheId,
+				apievents_league_id: item.ids.leagueId,
+				odd_id: item.ids.oddId,
 			});
 		});
 
-		console.log(dataFinal);
-
-
+		
     	return api.post('bet-purchase', dataFinal)
     	.then(response => {
     		let user = JSON.parse(localStorage.getItem('user'));

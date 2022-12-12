@@ -1,6 +1,6 @@
 <template>
 	<div class="area-bets-match">
-		<div class="area-odds">
+		<!--<div class="area-odds">
 			<label class="teste">Escanteios</label>
 			<div class="odds">
 				<div class="col-list-3 col-lb"></div>
@@ -137,72 +137,24 @@
 				<div class="col-list-4 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsCorners.first_10_minutes_[0]?.odds).toFixed(2)}}</span></div>
 				<div class="col-list-4 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsCorners.first_10_minutes_[1]?.odds).toFixed(2)}}</span></div>
 			</div>
-		</div>
+		</div>-->
 	</div>
 </template>
 
 <script type="text/javascript">
-	import BetService from "../../../services/bet.service";
+	import { mapGetters } from 'vuex';
+	import TripleOdds from '../LayoutsOdds/TripleOdds.vue'
 
 	export default {
-
-	    data(){
-	    	return {
-	    		matche: [],
-	    		oddsCorners: {
-					corners: [],
-					total_corners: [],//a fazer
-					alternative_corners: [],//a fazer
-					corners_2_way: [],//a fazer
-					first_half_corners: [], 
-					corner_match_bet: [],
-					corner_handicap: [],
-					asian_handicap_corners: [],
-					asian_total_corners: [],
-					_1st_half_asian_corners: [],
-					time_of_first_corner: [],//a fazer
-					team_corners: [],//a fazer
-					corners_race: [],//a fazer
-					first_match_corner: [],
-					last_match_corner: [],
-					multicorners: [],
-					first_10_minutes_: [],
-					
-	    		},
-	    		
-	    	}
+		components: {
+		    TripleOdds,
 	    },
 
-	    mounted() {
-	    	this.$store.dispatch('bets/setLoading', true);
-			BetService.getMatcheOdds(this.$route.params.idLeague, this.$route.params.idMache).then(
-				(response) => {
-					this.matche = response.data.match;
-					let dataOddsCorners = response.data.odds.corners.sp;
-					this.oddsCorners.corners = dataOddsCorners.corners.odds;
-					this.oddsCorners.total_corners = dataOddsCorners.total_corners.odds;
-					this.oddsCorners.alternative_corners = dataOddsCorners.alternative_corners.odds;
-					this.oddsCorners.corners_2_way = dataOddsCorners.corners_2_way.odds;
-					this.oddsCorners.first_half_corners = dataOddsCorners.first_half_corners.odds;
-					this.oddsCorners.corner_match_bet = dataOddsCorners.corner_match_bet.odds;
-					this.oddsCorners.corner_handicap = dataOddsCorners.corner_handicap.odds;
-					this.oddsCorners.asian_handicap_corners = dataOddsCorners.asian_handicap_corners.odds;
-					this.oddsCorners.asian_total_corners = dataOddsCorners.asian_total_corners.odds;
-					this.oddsCorners._1st_half_asian_corners = dataOddsCorners['1st_half_asian_corners'].odds;
-					this.oddsCorners.time_of_first_corner = dataOddsCorners.time_of_first_corner.odds;
-					this.oddsCorners.team_corners = dataOddsCorners.team_corners.odds;
-					this.oddsCorners.corners_race = dataOddsCorners.corners_race.odds;
-					this.oddsCorners.first_match_corner = dataOddsCorners.first_match_corner.odds;
-					this.oddsCorners.last_match_corner = dataOddsCorners.last_match_corner.odds;
-					this.oddsCorners.multicorners = dataOddsCorners.multicorners.odds;
-					this.oddsCorners.first_10_minutes_ = dataOddsCorners['first_10_minutes_(00:00_09:59)'].odds;
-					
-					this.$store.dispatch('bets/setLoading', false);
-				},
-				(error) => {
-				    this.content = 'algum erro aconteceu'
-				}
-			);
-		},
+		computed: {
+	    	...mapGetters({
+	        	odds: 'odds/oddsPrematcheMain',
+	        	matcheOdds: 'odds/matcheOdds',
+	    	})
+	    },
 	}
 </script>

@@ -11,7 +11,7 @@
 		<img src="@/assets/icons-sports/futebol.png" />
 		<label>Principais Listas</label>
 	</div>
-	<ul>
+	<ul class="list-best-leagues">
 		<li>
 			<img src="@/assets/icons-sports/futebol.png" />
 			<label>Copa Libertadores</label>
@@ -68,40 +68,39 @@
 
 	</ul>
 
-	<div v-for="(item, index) in leagues" :key="index">
+
+
+
+	<div v-for="(country, index) in countriesleagues" :key="index">
 		<div class="title-locale-leagues">
-			<img src="@/assets/icons-sports/futebol.png" />
-			<label>{{item.country}}</label>
+			<img :src="country?.flag" />
+			<label>{{country.label}}</label>
 		</div>
-		<ul>
-			<li v-for="(subitem, index) in item.leagues" :key="index">
-				<router-link :to="'/competicao/'+subitem.name+'/'+subitem.id">
-					<label>{{subitem.name}}</label>
+		<ul class="all-leagues">
+			<li v-for="(league, indexLeague) in country.leagues" :key="indexLeague">
+				<router-link :to="'/competition/'+country?.code+'/'+league?.apievents_sport_id+'/'+league?.apievents_league_id" v-if="league?.apievents_sport_id === 1">
+					<label>{{league?.label_name}}</label>
 				</router-link>
 			</li>
 		</ul>
 	</div>
+	
 
 
 </template>
 
 <script>
-	import BetService from "../../../services/bet.service";
 	import { mapGetters } from 'vuex';
 
 	export default {
 		data(){
-			return {
-			}
+			return {}
 		},
 		computed: {
 	    	...mapGetters({
-	        	leagues: 'bets/leagues'
+	        	countriesleagues: 'bets/countriesleagues'
 	    	})
 	    },
-		mounted() {
-			this.$store.dispatch('bets/initLeagues');
-		},
 	}
 </script>
 
@@ -112,9 +111,31 @@
 	div.title-locale-leagues {float:left; width:100%; background-color:#838383; padding:5px;}
 	div.title-locale-leagues img {width:15px; margin-right:5px;}
 	div.title-locale-leagues label {color:#dddddd; font-size:13px;}
-	ul {float:left; width:100%; background-color:#646464; list-style:none; margin:0px; padding:0px;}
-	ul li {float:left; width:33.333333%; padding:5px; display:flex;}
-	ul li img {width:20px; margin-right:5px;}
-	ul li label {width:100%; font-size:13px; color:#eeeeee; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+	
+	ul.list-best-leagues {float:left; width:100%; background-color:#646464; list-style:none; margin:0px; padding:0px;}
+	ul.list-best-leagues li {float:left; width:33.333333%; padding:5px; display:flex;}
+	ul.list-best-leagues li img {width:20px; margin-right:5px;}
+	ul.list-best-leagues li label {float:left; width:95%; font-size:13px; color:#eeeeee; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+
+	ul.all-leagues {float:left; width:100%; background-color:#646464; list-style:none; margin:0px; padding:0px;}
+	ul.all-leagues li {float:left; width:33.333333%; padding:5px; display:flex; flex-wrap:wrap;}
+	ul.all-leagues li a {width:100%;}
+	ul.all-leagues li label {float:left; width:100%; font-size:13px; color:#eeeeee; overflow:hidden; white-space
+		:nowrap; text-overflow:ellipsis;}
+	ul.all-leagues li label img.logo-league {height:25px; margin-right:10px;}
+
+	@media (min-width:0px) and (max-width:799px){
+		ul.list-best-leagues li {width:100%;}
+		ul.all-leagues li {width:100%;}
+	}
+
+	@media (min-width:800px) and (max-width:1000px){
+		ul.list-best-leagues li {width:50%;}
+		ul.all-leagues li {width:50%;}
+	}
+
+	
+
+	
 
 </style>

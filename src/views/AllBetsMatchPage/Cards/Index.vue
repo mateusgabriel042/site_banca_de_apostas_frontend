@@ -1,6 +1,6 @@
 <template>
 	<div class="area-bets-match">
-		<div class="area-odds">
+		<!--<div class="area-odds">
 			<label class="teste">Cartões +/-</label>
 			<div class="odds">
 				<div class="col-list-4 col-lb"></div>
@@ -114,67 +114,24 @@
 					</span>
 				</div>
 			</div>
-		</div>
+		</div>-->
 	</div>
 </template>
 
 <script type="text/javascript">
-	import BetService from "../../../services/bet.service";
+	import { mapGetters } from 'vuex';
+	import TripleOdds from '../LayoutsOdds/TripleOdds.vue'
 
 	export default {
-
-	    data(){
-	    	return {
-	    		matche: [],
-	    		oddsCards: {
-					number_of_cards_in_match: [],
-					both_teams_to_receive_a_card: [],
-					both_teams_to_receive_2: [],
-					player_to_be_booked: [],
-					card_handicap: [],
-					alternative_card_handicap: [],//a fazer
-					asian_total_cards: [],
-					asian_handicap_cards: [],
-					first_card_received: [],
-
-					time_of_first_card: [],//a fazer
-					team_cards: [],// a fazer
-					first_10_minutes_: [],
-					_1st_player_booked: [],//a fazer
-					player_to_be_sent_off: [],//a fazer
-	    		},
-	    		
-	    	}
+		components: {
+		    TripleOdds,
 	    },
 
-	    mounted() {
-	    	this.$store.dispatch('bets/setLoading', true);
-			BetService.getMatcheOdds(this.$route.params.idLeague, this.$route.params.idMache).then(
-				(response) => {
-					this.matche = response.data.match;
-					let dataOddsCards = response.data.odds.cards.sp;
-					this.oddsCards.number_of_cards_in_match = dataOddsCards.number_of_cards_in_match.odds;
-					this.oddsCards.number_of_cards_in_match = dataOddsCards.number_of_cards_in_match.odds;
-					this.oddsCards.both_teams_to_receive_a_card = dataOddsCards.both_teams_to_receive_a_card.odds;
-					this.oddsCards.both_teams_to_receive_2 = dataOddsCards['both_teams_to_receive_2+_cards'].odds;
-					this.oddsCards.player_to_be_booked = dataOddsCards.player_to_be_booked.odds;
-					this.oddsCards.card_handicap = dataOddsCards.card_handicap.odds;
-					this.oddsCards.alternative_card_handicap = dataOddsCards.alternative_card_handicap.odds;
-					this.oddsCards.asian_total_cards = dataOddsCards.asian_total_cards.odds;
-					this.oddsCards.asian_handicap_cards = dataOddsCards.asian_handicap_cards.odds;
-					this.oddsCards.first_card_received = dataOddsCards.first_card_received.odds;
-					this.oddsCards.time_of_first_card = dataOddsCards.time_of_first_card.odds;
-					this.oddsCards.team_cards = dataOddsCards.team_cards.odds;
-					this.oddsCards.first_10_minutes_ = dataOddsCards['first_10_minutes_(00:00_09:59)'].odds;
-					this.oddsCards._1st_player_booked = dataOddsCards['1st_player_booked'].odds;
-					this.oddsCards.player_to_be_sent_off = dataOddsCards.player_to_be_sent_off.odds;
-					
-					this.$store.dispatch('bets/setLoading', false);
-				},
-				(error) => {
-				    this.content = 'algum erro aconteceu'
-				}
-			);
-		},
+		computed: {
+	    	...mapGetters({
+	        	odds: 'odds/oddsPrematcheMain',
+	        	matcheOdds: 'odds/matcheOdds',
+	    	})
+	    },
 	}
 </script>

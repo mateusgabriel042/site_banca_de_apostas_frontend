@@ -1,42 +1,42 @@
 <template>
 	<div class="area-bets">
-		<label class="not-bets" v-if="betsList.length === 0">Ainda não há nenhuma aposta!</label>
+		<label class="not-bets" v-if="betsSelected.length === 0">Ainda não há nenhuma aposta!</label>
 		<div v-else>
 			<ul>
 				
-				<li v-for="(item, index) in betsList" :key="index">
+				<li v-for="(item, index) in betsSelected" :key="index">
 					<div class="row">
 						<div class="col-1">
 							<button class="btn-close-bet" @click="removeBetOfList(index)" type="button"><font-awesome-icon icon="fa-solid fa-close" /></button>
 						</div>
 						<div class="col-10">
 							<div class="area-lb-odd">
-								<label>{{item.info.labelBet}}</label>
+								<label>{{item.info.oddNameLabel}}</label>
 								<label>{{parseFloat(item.info.odd).toFixed(2)}}</label>
 							</div>
 							<div class="area-label-indicator">
-								<label>{{item.info.labelTypeBet}}</label>
+								<label>{{item.info.subtypeBetLabel}}</label>
 							</div>
 							<div class="area-label-game">
 								<label>{{item.info.labelMatche}}</label>
 							</div>
 							<div class="area-input-bet">
 								<input type="number" min="0" name="bet[]" @change="onChangeBet($event, index)" />
-								<label>Retornos: {{parseFloat(item.priceBet*item.info.odd).toFixed(2)}}</label>
+								<label>Retornos: {{parseFloat(item.info.priceBet*item.info.odd).toFixed(2)}}</label>
 							</div>
 						</div>
 					</div>
 				</li>
 
-				<li v-if="betsList.length > 1">
+				<li v-if="betsSelected.length > 1">
 					<div class="row">
 						<div class="col-11">
 							<div class="area-lb-odd">
 								<label>Aposta Múltipla</label>
-								<label>{{parseFloat(oddMultiple).toFixed(2)}}</label>
+								<label>{{oddMultiple}}</label>
 							</div>
 							<div class="area-label-indicator">
-								<label>{{betsList.length}} Múltiplas</label>
+								<label>{{betsSelected.length}} Múltiplas</label>
 							</div>
 							<div class="area-input-bet">
 								<input type="number" min="0" name="betMultiples[]" @change="onChangeMultipleBet($event)" />
@@ -64,7 +64,7 @@
 		},
 		computed: {
 	    	...mapGetters({
-	        	betsList: 'bets/betsList',
+	        	betsSelected: 'bets/betsSelected',
 	        	priceTotalBets: 'bets/priceTotalBets',
 	        	oddMultiple: 'bets/oddMultiple'
 	    	})
