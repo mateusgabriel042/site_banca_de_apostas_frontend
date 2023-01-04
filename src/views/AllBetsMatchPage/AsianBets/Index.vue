@@ -1,5 +1,19 @@
 <template>
 	<div class="area-bets-match">
+		<DoubleOddsNameTeams
+			betNameLabel="Handicap Asiático"
+			:odds="odds.asian_handicap"
+			:teamHome="matcheOdds?.team_home_name"
+			:teamAway="matcheOdds?.team_away_name"
+			:labelOdd1="odds?.asian_handicap?.odds[0].handicap"
+			:labelOdd2="odds?.asian_handicap?.odds[1].handicap"
+			:bet1="odds?.asian_handicap?.odds[0].handicap"
+			:bet2="odds?.asian_handicap?.odds[1].handicap"
+			typeBet="asian_lines"
+			subtypeBet="asian_handicap"
+			typeEvent="prematche"
+		/>
+
 		<!--<div class="area-odds">
 			<label class="teste">Handicap Asiático</label>
 			<div class="odds">
@@ -110,15 +124,21 @@
 <script type="text/javascript">
 	import { mapGetters } from 'vuex';
 	import TripleOdds from '../LayoutsOdds/TripleOdds.vue'
+	import DoubleOdds from '../LayoutsOdds/DoubleOdds.vue'
+	import DoubleOddsNameTeams from '../LayoutsOdds/DoubleOddsNameTeams.vue'
+	import UnderOverOdds from '../LayoutsOdds/UnderOverOdds.vue'
 
 	export default {
 		components: {
 		    TripleOdds,
+		    DoubleOdds,
+		    DoubleOddsNameTeams,
+		    UnderOverOdds
 	    },
 
 		computed: {
 	    	...mapGetters({
-	        	odds: 'odds/oddsPrematcheMain',
+	        	odds: 'odds/oddsPrematcheAsianBets',
 	        	matcheOdds: 'odds/matcheOdds',
 	    	})
 	    },

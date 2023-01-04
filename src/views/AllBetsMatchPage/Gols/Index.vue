@@ -1,19 +1,30 @@
 <template>
 	<div class="area-bets-match">
-		<!--<div class="area-odds">
-			<label class="teste">Gols +/-</label>
-			<div class="odds">
-				<div class="col-list-4 col-lb"></div>
-				<div class="col-list-4 col-lb">Mais de</div>
-				<div class="col-list-4 col-lb">Menos de</div>
-			</div>
-			
-			<div class="odds">
-				<div class="col-list-4 col-odd center bg-gray-1">{{oddsGoals.goals_over_under[0]?.name}}</div>
-				<div class="col-list-4 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsGoals.goals_over_under[0]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-4 col-odd center bg-gray-2"><span class="color-odd">{{parseFloat(oddsGoals.goals_over_under[1]?.odds).toFixed(2)}}</span></div>
-			</div>
-		</div>
+		<UnderOverOdds
+			betNameLabel="Gols +/-"
+			:odds="odds.goals_over_under"
+			:labelOdd1="`${odds?.goals_over_under?.odds[0].name}`"
+			:labelOdd2="`${odds?.goals_over_under?.odds[0].name}`"
+			:bet1="`over_${odds?.goals_over_under?.odds[0].name}`"
+			:bet2="`under_${odds?.goals_over_under?.odds[0].name}`"
+			typeBet="goals"
+			subtypeBet="goals_over_under"
+			typeEvent="prematche"
+		/>
+
+		<DoubleOdds
+			betNameLabel="Para Ambos os Times Marcarem"
+			:odds="odds.both_teams_to_score"
+			labelOdd1="Sim"
+			labelOdd2="Não"
+			bet1="yes"
+			bet2="no"
+			typeBet="goals"
+			subtypeBet="both_teams_to_score"
+			typeEvent="prematche"
+		/>
+
+		<!--
 
 		<div class="area-odds">
 			<label class="teste">Para Ambos os Times Marcarem</label>
@@ -98,15 +109,19 @@
 <script type="text/javascript">
 	import { mapGetters } from 'vuex';
 	import TripleOdds from '../LayoutsOdds/TripleOdds.vue'
+	import DoubleOdds from '../LayoutsOdds/DoubleOdds.vue'
+	import UnderOverOdds from '../LayoutsOdds/UnderOverOdds.vue'
 
 	export default {
 		components: {
 		    TripleOdds,
+		    DoubleOdds,
+		    UnderOverOdds
 	    },
 
 		computed: {
 	    	...mapGetters({
-	        	odds: 'odds/oddsPrematcheMain',
+	        	odds: 'odds/oddsPrematcheGols',
 	        	matcheOdds: 'odds/matcheOdds',
 	    	})
 	    },

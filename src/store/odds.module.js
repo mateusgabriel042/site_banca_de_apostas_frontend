@@ -15,7 +15,6 @@ export const odds = {
 	},
 	actions: {
 		pupulateOdds({ commit, state }, data){
-			console.log(data);
 			commit('loading', true);
 			commit('pupulateOdds', data);
 			commit('loading', false);

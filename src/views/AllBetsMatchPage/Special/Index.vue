@@ -1,5 +1,16 @@
 <template>
 	<div class="area-bets-match">
+		<DoubleOdds
+			betNameLabel="Gol contra"
+			:odds="odds.own_goal"
+			labelOdd1="Sim"
+			labelOdd2="Não"
+			bet1="yes"
+			bet2="no"
+			typeBet="specials"
+			subtypeBet="own_goal"
+			typeEvent="prematche"
+		/>
 		<!--<div class="area-odds">
 			<label class="teste">Especiais</label>
 			<div class="odds">
@@ -156,15 +167,21 @@
 <script type="text/javascript">
 	import { mapGetters } from 'vuex';
 	import TripleOdds from '../LayoutsOdds/TripleOdds.vue'
+	import DoubleOdds from '../LayoutsOdds/DoubleOdds.vue'
+	import DoubleOddsNameTeams from '../LayoutsOdds/DoubleOddsNameTeams.vue'
+	import UnderOverOdds from '../LayoutsOdds/UnderOverOdds.vue'
 
 	export default {
 		components: {
 		    TripleOdds,
+		    DoubleOdds,
+		    DoubleOddsNameTeams,
+		    UnderOverOdds
 	    },
 
 		computed: {
 	    	...mapGetters({
-	        	odds: 'odds/oddsPrematcheMain',
+	        	odds: 'odds/oddsPrematcheSpecial',
 	        	matcheOdds: 'odds/matcheOdds',
 	    	})
 	    },

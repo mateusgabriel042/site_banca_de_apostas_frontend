@@ -1,5 +1,16 @@
 <template>
 	<div class="area-bets-match">
+		<UnderOverOdds
+			betNameLabel="Total cartões na partida"
+			:odds="odds.number_of_cards_in_match"
+			:labelOdd1="`${odds?.number_of_cards_in_match?.odds[0].name}`"
+			:labelOdd2="`${odds?.number_of_cards_in_match?.odds[0].name}`"
+			:bet1="`over_${odds?.number_of_cards_in_match?.odds[0].name}`"
+			:bet2="`under_${odds?.number_of_cards_in_match?.odds[0].name}`"
+			typeBet="cards"
+			subtypeBet="number_of_cards_in_match"
+			typeEvent="prematche"
+		/>
 		<!--<div class="area-odds">
 			<label class="teste">Cartões +/-</label>
 			<div class="odds">
@@ -121,15 +132,21 @@
 <script type="text/javascript">
 	import { mapGetters } from 'vuex';
 	import TripleOdds from '../LayoutsOdds/TripleOdds.vue'
+	import DoubleOdds from '../LayoutsOdds/DoubleOdds.vue'
+	import DoubleOddsNameTeams from '../LayoutsOdds/DoubleOddsNameTeams.vue'
+	import UnderOverOdds from '../LayoutsOdds/UnderOverOdds.vue'
 
 	export default {
 		components: {
 		    TripleOdds,
+		    DoubleOdds,
+		    DoubleOddsNameTeams,
+		    UnderOverOdds
 	    },
 
 		computed: {
 	    	...mapGetters({
-	        	odds: 'odds/oddsPrematcheMain',
+	        	odds: 'odds/oddsPrematcheCards',
 	        	matcheOdds: 'odds/matcheOdds',
 	    	})
 	    },

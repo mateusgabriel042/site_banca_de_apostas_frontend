@@ -1,5 +1,44 @@
 <template>
 	<div class="area-bets-match">
+		<UnderOverOdds
+			betNameLabel="Escanteios - 2 Opções"
+			:odds="odds.corners_2_way"
+			:labelOdd1="`${odds?.corners_2_way?.odds[0].name}`"
+			:labelOdd2="`${odds?.corners_2_way?.odds[0].name}`"
+			:bet1="`over_${odds?.corners_2_way?.odds[0].name}`"
+			:bet2="`under_${odds?.corners_2_way?.odds[0].name}`"
+			typeBet="corners"
+			subtypeBet="corners_2_way"
+			typeEvent="prematche"
+		/>
+
+		<UnderOverOdds
+			betNameLabel="Total de Cantos Asiáticos"
+			:odds="odds.asian_total_corners"
+			:labelOdd1="`${odds?.asian_total_corners?.odds[0].name}`"
+			:labelOdd2="`${odds?.asian_total_corners?.odds[0].name}`"
+			:bet1="`over_${odds?.asian_total_corners?.odds[0].name}`"
+			:bet2="`under_${odds?.asian_total_corners?.odds[0].name}`"
+			typeBet="corners"
+			subtypeBet="asian_total_corners"
+			typeEvent="prematche"
+		/>
+
+
+
+		<UnderOverOdds
+			betNameLabel="1º Tempo - Escanteios Asiáticos"
+			:odds="odds['1st_half_asian_corners']"
+			:labelOdd1="`${odds['1st_half_asian_corners'].odds[0].name}`"
+			:labelOdd2="`${odds['1st_half_asian_corners'].odds[0].name}`"
+			:bet1="`over_${odds['1st_half_asian_corners'].odds[0].name}`"
+			:bet2="`under_${odds['1st_half_asian_corners'].odds[0].name}`"
+			typeBet="corners"
+			subtypeBet="1st_half_asian_corners"
+			typeEvent="prematche"
+		/>
+
+
 		<!--<div class="area-odds">
 			<label class="teste">Escanteios</label>
 			<div class="odds">
@@ -144,15 +183,21 @@
 <script type="text/javascript">
 	import { mapGetters } from 'vuex';
 	import TripleOdds from '../LayoutsOdds/TripleOdds.vue'
+	import DoubleOdds from '../LayoutsOdds/DoubleOdds.vue'
+	import DoubleOddsNameTeams from '../LayoutsOdds/DoubleOddsNameTeams.vue'
+	import UnderOverOdds from '../LayoutsOdds/UnderOverOdds.vue'
 
 	export default {
 		components: {
 		    TripleOdds,
+		    DoubleOdds,
+		    DoubleOddsNameTeams,
+		    UnderOverOdds
 	    },
 
 		computed: {
 	    	...mapGetters({
-	        	odds: 'odds/oddsPrematcheMain',
+	        	odds: 'odds/oddsPrematcheCorners',
 	        	matcheOdds: 'odds/matcheOdds',
 	    	})
 	    },

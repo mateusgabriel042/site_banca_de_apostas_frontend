@@ -1,13 +1,19 @@
 <template>
 	<div class="area-bets-match">
-		<!--<div class="area-odds">
-			<label class="teste">Resultado Final 1º tempo</label>
-			<div class="odds">
-				<div class="col-list-4 col-odd">{{matche?.home?.name}} <span class="color-odd">{{parseFloat(oddsHalfTime.half_time_result[0]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-4 col-odd">Empate <span class="color-odd">{{parseFloat(oddsHalfTime.half_time_result[1]?.odds).toFixed(2)}}</span></div>
-				<div class="col-list-4 col-odd">{{matche?.away?.name}} <span class="color-odd">{{parseFloat(oddsHalfTime.half_time_result[2]?.odds).toFixed(2)}}</span></div>
-			</div>
-		</div>
+		<TripleOdds
+			betNameLabel="Resultado Final 1º tempo"
+			:odds="odds.half_time_result"
+			:labelOdd1="matcheOdds?.team_home_name"
+			labelOdd2="Empate"
+			:labelOdd3="matcheOdds?.team_away_name"
+			bet1="1"
+			bet2="draw"
+			bet3="2"
+			typeBet="half"
+			subtypeBet="half_time_result"
+			typeEvent="prematche"
+		/>
+		<!--
 
 		<div class="area-odds">
 			<label class="teste">Resultado Final 1º tempo Dupla Hipótese</label>
@@ -151,15 +157,19 @@
 <script type="text/javascript">
 	import { mapGetters } from 'vuex';
 	import TripleOdds from '../LayoutsOdds/TripleOdds.vue'
+	import DoubleOdds from '../LayoutsOdds/DoubleOdds.vue'
+	import UnderOverOdds from '../LayoutsOdds/UnderOverOdds.vue'
 
 	export default {
 		components: {
 		    TripleOdds,
+		    DoubleOdds,
+		    UnderOverOdds
 	    },
 
 		computed: {
 	    	...mapGetters({
-	        	odds: 'odds/oddsPrematcheMain',
+	        	odds: 'odds/oddsPrematcheFirstAndSecondTime',
 	        	matcheOdds: 'odds/matcheOdds',
 	    	})
 	    },

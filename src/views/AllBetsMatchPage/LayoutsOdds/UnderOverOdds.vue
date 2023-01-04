@@ -2,25 +2,25 @@
 	<div class="area-odds" v-if="odds !== undefined">
 		<label>{{betNameLabel}}</label>
 		<div class="odds">
-			<div class="col-list-4 col-odd"
+			<div class="col-list-4 col-lb"></div>
+			<div class="col-list-4 col-lb">Mais de</div>
+			<div class="col-list-4 col-lb">Menos de</div>
+		</div>
+
+		<div class="odds">
+			<div class="col-list-4 col-odd center bg-gray-1">{{labelOdd1}}</div>
+			<div class="col-list-4 col-odd center bg-gray-2"
 				:class="containBet(0)"
 				@click="(e) => addBetList(0, labelOdd1, bet1)"
 			>
-				{{labelOdd1}} <span class="color-odd">{{formatOdd(odds?.odds[0].odds)}}</span>
+				<span class="color-odd">{{parseFloat(odds?.odds[0].odds).toFixed(2)}}</span>
 			</div>
 
-			<div class="col-list-4 col-odd"
+			<div class="col-list-4 col-odd center bg-gray-2"
 				:class="containBet(1)"
 				@click="(e) => addBetList(1, labelOdd2, bet2)"
 			>
-				{{labelOdd2}} <span class="color-odd">{{formatOdd(odds?.odds[1].odds)}}</span>
-			</div>
-
-			<div class="col-list-4 col-odd"
-				:class="containBet(2)"
-				@click="(e) => addBetList(2, labelOdd3, bet3)"
-			>
-				{{labelOdd3}} <span class="color-odd">{{formatOdd(odds?.odds[2].odds)}}</span>
+				<span class="color-odd">{{parseFloat(odds?.odds[1].odds).toFixed(2)}}</span>
 			</div>
 		</div>
 	</div>
@@ -35,10 +35,8 @@
 		    odds: Object,
 		    labelOdd1: String,
 		    labelOdd2: String,
-		    labelOdd3: String,
 		    bet1: String,
 		    bet2: String,
-		    bet3: String,
 		    typeBet: String,
 		    subtypeBet: String,
 		    typeEvent: String,

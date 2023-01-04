@@ -73,12 +73,11 @@
 
 	<div v-for="(country, index) in countriesleagues" :key="index">
 		<div class="title-locale-leagues">
-			<img :src="country?.flag" />
 			<label>{{country.label}}</label>
 		</div>
 		<ul class="all-leagues">
 			<li v-for="(league, indexLeague) in country.leagues" :key="indexLeague">
-				<router-link :to="'/competition/'+country?.code+'/'+league?.apievents_sport_id+'/'+league?.apievents_league_id" v-if="league?.apievents_sport_id === 1">
+				<router-link :to="'/competition/'+country?.code+'/'+league?.apievents_sport_id+'/'+league?.apievents_league_id" v-if="league?.apievents_sport_id == 1">
 					<label>{{league?.label_name}}</label>
 				</router-link>
 			</li>

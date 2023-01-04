@@ -7,6 +7,12 @@
 			:labelOdd1="matcheOdds?.team_home_name"
 			labelOdd2="Empate"
 			:labelOdd3="matcheOdds?.team_away_name"
+			:bet1="1"
+			bet2="draw"
+			:bet3="2"
+			typeBet="main"
+			subtypeBet="full_time_result"
+			typeEvent="prematche"
 		/>
 
 		<TripleOdds
@@ -15,6 +21,12 @@
 			:labelOdd1="`${matcheOdds?.team_home_name} ou Empate`"
 			:labelOdd2="`Empate ou ${matcheOdds?.team_away_name}`"
 			:labelOdd3="`${matcheOdds?.team_home_name} ou ${matcheOdds?.team_away_name}`"
+			bet1="home_or_draw"
+			bet2="draw_or_away"
+			bet3="home_or_away"
+			typeBet="main"
+			subtypeBet="double_chance"
+			typeEvent="prematche"
 		/>
 
 

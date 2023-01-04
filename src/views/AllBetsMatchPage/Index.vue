@@ -16,8 +16,7 @@
 		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/jogador'" active-class="active">Jogador</router-link>
 		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/minutos'" active-class="active">Minutos</router-link>
 		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/especial'" active-class="active">Especial</router-link>
-		<router-link :to="'/bets-match/'+matche.apievents_sport_id+'/'+matche.apievents_league_id+'/'+matche.bet365_matche_id+'/buscar'" active-class="active">Buscar</router-link>
-		<!--<router-link to="/bets-match/handicap" active-class="active">Handicap</router-link>-->
+		
 	</div>
 	<label class="date">Sexta-feira, 08 de julho, 19:00hs</label>
 
